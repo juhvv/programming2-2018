@@ -9,10 +9,12 @@ int main()
 
     for ( int number = 1; number <= num_count; ++number) {
 
-        if ( number%3 == 0) {
-            std::cout << "zip" << std::endl;
+        if ( number%3 == 0 and number%7 == 0) {
+            std::cout << "zip boing" << std::endl;
         } else if ( number%7 == 0 ) {
             std::cout << "boing" << std::endl;
+        } else if ( number%3 == 0 ) {
+            std::cout << "zip" << std::endl;
         } else {
             std::cout << number << std::endl;
         }
