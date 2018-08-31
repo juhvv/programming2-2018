@@ -9,7 +9,7 @@ int main()
 
     int result = pow( inpt_num, 3);
 
-    if ( result >= inpt_num and result > 0) {
+    if ( result >= inpt_num and result >= 0) {
         std::cout << "The cube of " << inpt_num << " is " << result << "." << std::endl;
     } else {
         std::cout << "Error! The cube of " << inpt_num << " is not " << result << "." << std::endl;
