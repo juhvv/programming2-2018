@@ -8,7 +8,13 @@ int main()
     std::cin >> num_count;
 
     for ( int number = 1; number <= num_count; ++number) {
-            std::cout << number << std::endl;
 
+        if ( number%3 == 0) {
+            std::cout << "zip" << std::endl;
+        } else if ( number%7 == 0 ) {
+            std::cout << "boing" << std::endl;
+        } else {
+            std::cout << number << std::endl;
+        }
     }
 }
