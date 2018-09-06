@@ -24,7 +24,7 @@ bool inpt_chk(int balls, int max_balls) {
         std::cout << "The number of balls must be a positive number." << std::endl;
         return 0;
 
-    } else if ( balls == max_balls ) {
+    } else if ( balls < max_balls ) {
         std::cout << "The maximum number of drawn balls is the total amount of balls." << std::endl;
         return 0;
 
