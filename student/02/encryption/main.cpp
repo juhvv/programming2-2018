@@ -60,6 +60,8 @@ bool letterchk( std::string c_string ) {
 void encrypter( std::string& en_str, std::string en_key) {
     std::string en_text = "";
     for ( char letter:en_str ) {
+        // ASCII values of lower case alphabet range from 97 to 122
+        // -> subtract 97 form ASCII value and you get position of a letter
         int alpha_pos = letter - 97;
         en_text += en_key.at(alpha_pos);
     }
