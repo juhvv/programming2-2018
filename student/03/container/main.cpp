@@ -1,6 +1,7 @@
 #include <cstdlib>
 #include <iostream>
 #include <vector>
+#include <cmath>
 
 
 void read_integers(std::vector< int >& ints, int count)
@@ -38,7 +39,7 @@ int main()
         std::cout << "The integers are in an ascending order" << std::endl;
     else
         std::cout << "The integers are not in an ascending order" << std::endl;
-    /*
+
     if(is_arithmetic_series(integers))
         std::cout << "The integers form an arithmetic series" << std::endl;
     else
@@ -48,7 +49,7 @@ int main()
         std::cout << "The integers form a geometric series" << std::endl;
     else
         std::cout << "The integers do not form a geometric series" << std::endl;
-    */
+
     return EXIT_SUCCESS;
 }
 
@@ -64,13 +65,46 @@ bool same_values(std::vector<int> integers)
     return 1;
 }
 
-bool is_ordered_ascending(std::vector<int> integers) {
+bool is_ordered_ascending(std::vector<int> integers)
+{
     int prev_val = integers.at(0);
 
     for (int integer : integers) {
         if (integer < prev_val) {
             return 0;
         }
+    }
+    return 1;
+}
+
+bool is_arithmetic_series(std::vector<int> integers)
+{
+    int first = integers.at(0);
+    int second = integers.at(1);
+    int d = second - first;
+
+    int n = 1;
+    for (int integer : integers) {
+        if (integer != (first + (n-1)*d)) {
+            return 0;
+        }
+        n += 1;
+    }
+    return 1;
+}
+
+bool is_geometric_series(std::vector<int> integers)
+{
+    int first = integers.at(0);
+    int second = integers.at(1);
+    double q = second/first;
+
+    int n = 1;
+    for (int integer : integers) {
+        if (integer != first*pow(q, n-1)) {
+            return 0;
+        }
+        n += 1;
     }
     return 1;
 }
