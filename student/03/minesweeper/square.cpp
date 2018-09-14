@@ -11,12 +11,6 @@ bool Square::hasFlag() const
     return hasFlag_;
 }
 
-// delet this, do not change
-bool Square::hasMine() const
-{
-    return hasMine_;
-}
-
 // Method that is called when player opens a square, returns true if this square has no mine, else false.
 bool Square::open()
 {
@@ -46,7 +40,7 @@ bool Square::isReady() const
     }
 }
 
-// Reveals non-mine square(s)
+// Reveals non-mine square(s): this square and in some cases all adjacent squares
 void Square::areaClear() {
 
     // If this square has a flag, do nothing
@@ -56,7 +50,7 @@ void Square::areaClear() {
         if (not isOpened_ and adMines_ == 0) {
 
             isOpened_ = true;
-            // go through all adjacent squares and call method 'open' on the ones that have no mine.
+            // go through all adjacent squares and call this method on the ones that have no mine.
             for (unsigned int y = sizeVal(y_ - 1) ; y < sizeVal(y_ + 2) ; ++y) {
 
                 for (unsigned int x = sizeVal(x_ - 1) ; x < sizeVal(x_ + 2) ; ++x) {
@@ -69,7 +63,7 @@ void Square::areaClear() {
                 }
             }
         } else {
-            // In this case (adjacent mines) only this square is revealed.
+            // In this case (mines adjacent to this square) only this square is revealed.
             isOpened_ = true;
         }
     }

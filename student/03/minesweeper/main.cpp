@@ -7,38 +7,6 @@
 
 const int SIZE = 6;
 
-// test functions, delet this
-void printDebugBoard(std::vector< std::vector< Square > >& board, std::ostream& stream)
-{
-    // Printing space after each character to make ASCII graphics clearer
-
-    // Printing numbers of x-axis over the board
-    stream << "  ";
-    for(int x = 0; x < SIZE; ++x)
-    {
-        stream << (x+1) % 10 << ' ';  // Using modulo 10 to make the output fit, even if the board width was more than 10
-    }
-    stream << std::endl;
-
-    // Printing the board such that each line begins with y-coordinate, and then each
-    // square of the line is asked to print itself
-    for(int y = 0; y < SIZE; ++y)
-    {
-        stream << (y+1) % 10 << ' ';
-        for(int x = 0; x < SIZE; ++x)
-        {
-            if (board.at(y).at(x).hasMine()) {
-                stream << "* ";
-            } else {
-                stream << ". ";
-            }
-
-        }
-        stream << std::endl;
-    }
-}
-// end of test functions
-
 // Function prints the board in certain format.
 void printBoard(std::vector< std::vector< Square > >& board, std::ostream& stream)
 {
@@ -152,8 +120,6 @@ int main()
     std::vector< std::vector< Square > > board;
     initBoard(board);
     printBoard(board, std::cout);
-    //delet this
-    printDebugBoard(board, std::cout);
 
     int x = 0;
     int y = 0;
@@ -177,8 +143,6 @@ int main()
             board.at(y-1).at(x-1).addFlag();
         }
         printBoard(board, std::cout);
-        //delet this
-        printDebugBoard(board, std::cout);
     }
     std::cout << "You won, yay!" << std::endl;
     return EXIT_SUCCESS;

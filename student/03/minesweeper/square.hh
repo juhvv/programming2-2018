@@ -8,11 +8,11 @@
 class Square
 {
 public:
+    // Constructor
     Square (int x, int y, bool hasMine, std::vector< std::vector< Square > >* board);
-    bool hasFlag() const;
-    //delet this
-    bool hasMine() const;
 
+    // Public methods
+    bool hasFlag() const;
     bool open();
     bool isReady() const;
     void print(std::ostream& stream) const;
@@ -22,6 +22,7 @@ public:
     void countAdjacent();
 
 private:
+    // Private variables
     int x_;
     int y_;
     int adMines_;
@@ -32,6 +33,7 @@ private:
 
     std::vector< std::vector< Square > >* board_;
 
+    // Private methods
     unsigned int sizeVal(int size_int);
     void areaClear();
 };
