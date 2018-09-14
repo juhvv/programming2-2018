@@ -5,18 +5,19 @@ Square::Square(int x, int y, bool hasMine, std::vector< std::vector< Square > >*
 
 }
 
+// Returns true if this square has a flag, else false.
 bool Square::hasFlag() const
 {
     return hasFlag_;
 }
+
 // delet this, do not change
 bool Square::hasMine() const
 {
     return hasMine_;
 }
 
-// Method that is called when player opens a square, returns true if this square has no mine, else false. Variable
-// 'isOpened' is also changed.
+// Method that is called when player opens a square, returns true if this square has no mine, else false.
 bool Square::open()
 {
     if (hasMine_) {
@@ -24,19 +25,53 @@ bool Square::open()
         return false;
 
     } else {
-        isOpened_ = true;
+        // Using areaClear to handle revealing square(s)
+        areaClear();
+
         return true;
     }
 }
 
-// Returns true if this square has a flag or this square has been opened, false else.
+// Returns true if this square has a flag and a mine, false else.
 bool Square::isReady() const
 {
-    if (isOpened_ or hasFlag_) {
+    if (hasMine_ and hasFlag_) {
+        return true;
+
+    } else if (not hasMine_){
         return true;
 
     } else {
         return false;
+    }
+}
+
+// Reveals non-mine square(s)
+void Square::areaClear() {
+
+    // If this square has a flag, do nothing
+    if (not hasFlag_) {
+
+        // If this square has no adjacent mines, all adjacent squares (non-flag ones) are revealed.
+        if (not isOpened_ and adMines_ == 0) {
+
+            isOpened_ = true;
+            // go through all adjacent squares and call method 'open' on the ones that have no mine.
+            for (unsigned int y = sizeVal(y_ - 1) ; y < sizeVal(y_ + 2) ; ++y) {
+
+                for (unsigned int x = sizeVal(x_ - 1) ; x < sizeVal(x_ + 2) ; ++x) {
+
+                    Square& square = board_->at(y).at(x);
+                    if (not square.isOpened_) {
+                        // recursion call
+                        square.areaClear();
+                    }
+                }
+            }
+        } else {
+            // In this case (adjacent mines) only this square is revealed.
+            isOpened_ = true;
+        }
     }
 }
 

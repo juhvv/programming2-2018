@@ -25,7 +25,6 @@ private:
     int x_;
     int y_;
     int adMines_;
-    unsigned int sizeVal(int size_int);
 
     bool hasMine_;
     bool hasFlag_;
@@ -33,7 +32,8 @@ private:
 
     std::vector< std::vector< Square > >* board_;
 
-
+    unsigned int sizeVal(int size_int);
+    void areaClear();
 };
 
 #endif // SQUARE_HH
