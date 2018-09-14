@@ -13,7 +13,7 @@ public:
     //delet this
     bool hasMine() const;
 
-    bool open() const;
+    bool open();
     bool isReady() const;
     void print(std::ostream& stream) const;
 
@@ -29,6 +29,7 @@ private:
 
     bool hasMine_;
     bool hasFlag_;
+    bool isOpened_;
 
     std::vector< std::vector< Square > >* board_;
 

@@ -1,7 +1,7 @@
 #include "square.hh"
 
 Square::Square(int x, int y, bool hasMine, std::vector< std::vector< Square > >* board):
-    x_(x), y_(y), adMines_(0), hasMine_(hasMine), hasFlag_(false), board_(board)     {
+    x_(x), y_(y), adMines_(0), hasMine_(hasMine), hasFlag_(false), isOpened_(false), board_(board)     {
 
 }
 
@@ -15,15 +15,29 @@ bool Square::hasMine() const
     return hasMine_;
 }
 
-
-bool Square::open() const
+// Method that is called when player opens a square, returns true if this square has no mine, else false. Variable
+// 'isOpened' is also changed.
+bool Square::open()
 {
-    return false;
+    if (hasMine_) {
+        isOpened_ = true;
+        return false;
+
+    } else {
+        isOpened_ = true;
+        return true;
+    }
 }
 
+// Returns true if this square has a flag or this square has been opened, false else.
 bool Square::isReady() const
 {
-    return false;
+    if (isOpened_ or hasFlag_) {
+        return true;
+
+    } else {
+        return false;
+    }
 }
 
 // Returns int values from 0 to the size of board, paramteter values out of this range are changed to edge values of this range.
@@ -44,14 +58,19 @@ unsigned int Square::sizeVal(int size_int) {
 // Determines output mark of this square to parameter stream.
 void Square::print(std::ostream& stream) const
 {
-    if (hasFlag_) {
-        stream << "P";
-
-    } else if (hasMine_) {
-        stream << ".";
+    if (isOpened_) {
+        if (hasMine_) {
+            stream << "*";
+        } else {
+            stream << adMines_;
+        }
 
     } else {
-        stream << adMines_;
+        if (hasFlag_) {
+            stream << "P";
+        } else {
+            stream << ".";
+        }
     }
 }
 

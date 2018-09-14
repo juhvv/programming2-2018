@@ -37,6 +37,7 @@ void printDebugBoard(std::vector< std::vector< Square > >& board, std::ostream& 
         stream << std::endl;
     }
 }
+// end of test functions
 
 // Function prints the board in certain format.
 void printBoard(std::vector< std::vector< Square > >& board, std::ostream& stream)
