@@ -25,11 +25,13 @@ private:
     int x_;
     int y_;
     int adMines_;
+    unsigned int sizeVal(int size_int);
 
     bool hasMine_;
     bool hasFlag_;
 
     std::vector< std::vector< Square > >* board_;
+
 
 };
 

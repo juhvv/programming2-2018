@@ -28,7 +28,7 @@ void printDebugBoard(std::vector< std::vector< Square > >& board, std::ostream& 
         for(int x = 0; x < SIZE; ++x)
         {
             if (board.at(y).at(x).hasMine()) {
-                stream << "M ";
+                stream << "* ";
             } else {
                 stream << ". ";
             }
