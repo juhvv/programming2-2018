@@ -10,6 +10,9 @@ class Square
 public:
     Square (int x, int y, bool hasMine, std::vector< std::vector< Square > >* board);
     bool hasFlag() const;
+    //delet this
+    bool hasMine() const;
+
     bool open() const;
     bool isReady() const;
     void print(std::ostream& stream) const;
@@ -21,6 +24,7 @@ public:
 private:
     int x_;
     int y_;
+    int adMines_;
 
     bool hasMine_;
     bool hasFlag_;
