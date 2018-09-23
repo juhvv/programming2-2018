@@ -61,8 +61,10 @@ int main()
 
     if (reader(inputNam, pointsMap)) {
         printer(pointsMap);
+        return EXIT_SUCCESS;
 
     } else {
         std::cout << "Error! The file " << inputNam << " cannot be opened." << std::endl;
+        return EXIT_FAILURE;
     }
 }
