@@ -12,7 +12,12 @@ bool fileManr(std::string input, std::string output)
 
     std::ofstream outFile(output);
     std::string inLine;
+    int lineNum = 1;
+
     while (getline(inptFile, inLine)) {
+        inLine = std::to_string(lineNum) + " " + inLine;
+        ++ lineNum;
+
         outFile << inLine << std::endl;
     }
 
