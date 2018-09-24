@@ -3,9 +3,9 @@
 #include <sstream>
 #include <map>
 #include <string>
-#include <vector>
+#include <set>
 
-bool reader(std::string inputNam, std::map< std::string, std::vector< int > >& wordMap)
+bool reader(std::string inputNam, std::map< std::string, std::set< int > >& wordMap)
 {
     std::ifstream inptFile(inputNam);
 
@@ -14,7 +14,7 @@ bool reader(std::string inputNam, std::map< std::string, std::vector< int > >& w
     }
 
     std::string inLine;
-    std::vector< int > tempVec;
+    std::set< int > tempSet;
     int lineNum = 1;
 
     while (getline(inptFile, inLine)) {
@@ -22,11 +22,11 @@ bool reader(std::string inputNam, std::map< std::string, std::vector< int > >& w
 
         while (getline(sLine, inLine, ' ')) {
             if (wordMap.find(inLine) == wordMap.end()) {
-                tempVec = { lineNum };
-                wordMap.insert( {inLine, tempVec} );
+                tempSet = { lineNum };
+                wordMap.insert( {inLine, tempSet} );
 
             } else {
-                wordMap.at(inLine).push_back(lineNum);
+                wordMap.at(inLine).insert(lineNum);
             }
         }
 
@@ -38,7 +38,7 @@ bool reader(std::string inputNam, std::map< std::string, std::vector< int > >& w
     return true;
 }
 
-void printer(std::map< std::string, std::vector< int > >& wordMap)
+void printer(std::map< std::string, std::set< int > >& wordMap)
 {
     for ( auto data_pair : wordMap ) {
           std::cout << data_pair.first << " " << data_pair.second.size() << ": ";
@@ -54,7 +54,7 @@ void printer(std::map< std::string, std::vector< int > >& wordMap)
 
 int main()
 {
-    std::map< std::string, std::vector< int > > wordMap;
+    std::map< std::string, std::set< int > > wordMap;
     std::string inputNam;
 
     std::cout << "Input file: ";
