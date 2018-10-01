@@ -66,25 +66,18 @@ void netCounter( const std::string& id, const std::map< std::string, std::vector
     // if current id does not excist in netMap, do nothing else
 }
 
-void depthCounter( const std::string& id, const std::map< std::string, std::vector< std::string > >& netMap, int& dCount)
+void depthCounter( const std::string id, const std::map< std::string, std::vector< std::string > >& netMap, int& dCount, int& maxCount)
 {
-
-    ++dCount;
     if (netMap.find(id) != netMap.end()) {
-
-
-        // start going through sub-values of this id
+        ++dCount;
         for (std::string val : netMap.at(id)) {
-
-            // recursive call with current indent
-            depthCounter(val, netMap, dCount);
-            //dCount -= 1;
+            depthCounter(val, netMap, dCount, maxCount);
+            dCount = 1;
         }
 
-        dCount -= 1;
-
+    } else {
+        if (dCount > maxCount) { maxCount = dCount; } else { dCount = 1; }
     }
-    // if current id does not excist in netMap, do nothing else
 }
 
 
@@ -150,11 +143,10 @@ int main()
             // TODO: Implement the command here!  << Done!
 
             int dCount = 1;
-            if (netMap.find(id) != netMap.end()) {
-                depthCounter(id, netMap, dCount);
+            int maxCount = 1;
 
-            } else { dCount = 1; }
-            std::cout << dCount << std::endl;
+            depthCounter(id, netMap, dCount, maxCount);
+            std::cout << maxCount << std::endl;
 
         } else if(command == "Q" or command == "q"){
            return EXIT_SUCCESS;
