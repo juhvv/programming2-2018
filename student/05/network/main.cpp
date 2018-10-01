@@ -28,7 +28,7 @@ std::vector<std::string> split(const std::string& s, const char delimiter, bool 
     return result;
 }
 
-void netPrinter( std::string& id, std::map< std::string, std::vector< std::string > >& netMap, std::string& indent)
+void netPrinter( const std::string& id, const std::map< std::string, std::vector< std::string > >& netMap, std::string& indent)
 {
     // print current id with current indent
     std::cout << indent << id << std::endl;
@@ -51,6 +51,42 @@ void netPrinter( std::string& id, std::map< std::string, std::vector< std::strin
     }
     // if current id does not excist in netMap, do nothing else
 }
+
+void netCounter( const std::string& id, const std::map< std::string, std::vector< std::string > >& netMap, int& count )
+{
+    ++count;
+    if (netMap.find(id) != netMap.end()) {
+        // start going through sub-values of this id
+        for (std::string val : netMap.at(id)) {
+
+            // recursive call with current count
+            netCounter(val, netMap, count);
+        }
+    }
+    // if current id does not excist in netMap, do nothing else
+}
+
+void depthCounter( const std::string& id, const std::map< std::string, std::vector< std::string > >& netMap, int& dCount)
+{
+
+    ++dCount;
+    if (netMap.find(id) != netMap.end()) {
+
+
+        // start going through sub-values of this id
+        for (std::string val : netMap.at(id)) {
+
+            // recursive call with current indent
+            depthCounter(val, netMap, dCount);
+            //dCount -= 1;
+        }
+
+        dCount -= 1;
+
+    }
+    // if current id does not excist in netMap, do nothing else
+}
+
 
 int main()
 {
@@ -100,7 +136,10 @@ int main()
             }
             std::string id = parts.at(1);
 
-            // TODO: Implement the command here!
+            // TODO: Implement the command here!  << Done!
+            int count = -1;
+            netCounter(id, netMap, count);
+            std::cout << count << std::endl;
 
         } else if(command == "D" or command == "d"){
             if(parts.size() != 2){
@@ -108,7 +147,14 @@ int main()
             }
             std::string id = parts.at(1);
 
-            // TODO: Implement the command here!
+            // TODO: Implement the command here!  << Done!
+
+            int dCount = 1;
+            if (netMap.find(id) != netMap.end()) {
+                depthCounter(id, netMap, dCount);
+
+            } else { dCount = 1; }
+            std::cout << dCount << std::endl;
 
         } else if(command == "Q" or command == "q"){
            return EXIT_SUCCESS;
