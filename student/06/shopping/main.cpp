@@ -27,7 +27,7 @@ void product_printer (const Product& sProduct)
     if (sProduct.price < 0) {
         std::cout << "out of stock";
     } else {
-        std::cout << std::fixed << std::setprecision(2) << sProduct.price << " euros";
+        std::cout << std::fixed << std::setprecision(2) << sProduct.price;
     }
     std::cout << std::endl;
 }
@@ -287,7 +287,7 @@ int main()
                         }
                     } else {error_printer("st");}
 
-                } else { error_printer("ch"); }
+                } else { std::cout << "Error: unknown chain" << std::endl; }
 
             } else {
                 error_printer("cmd", command);
