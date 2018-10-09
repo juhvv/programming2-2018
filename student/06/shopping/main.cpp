@@ -1,3 +1,9 @@
+// TIE-02207
+// Assingment 6.3 Shopping
+// Juho Viljamaa 275354 viljamaa@student.tut.fi
+// Program for store information analysis
+// Main file
+
 #include <iostream>
 #include <iomanip>
 #include <fstream>
