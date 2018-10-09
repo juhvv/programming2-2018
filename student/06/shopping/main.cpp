@@ -40,7 +40,8 @@ struct storeSt {
     };
 
 // help function
-bool search_product (std::set < Product > targetSet, std::string searchName) {
+bool search_product (std::set < Product > targetSet, std::string searchName)
+{
     for (Product pro : targetSet) {
         if (pro.product_name == searchName) { return true; }
     }
@@ -48,7 +49,8 @@ bool search_product (std::set < Product > targetSet, std::string searchName) {
 }
 
 // Function for saving data read from file to programs data structure
-void data_handler(std::map < std::string, std::map < std::string, storeSt > >& shopsData, const std::string& stoChain, const std::string& stoName, const std::string& proName, const double& proPrice ) {
+void data_handler(std::map < std::string, std::map < std::string, storeSt > >& shopsData, const std::string& stoChain, const std::string& stoName, const std::string& proName, const double& proPrice )
+{
 
     Product newPro = {proName, proPrice};
 
@@ -86,12 +88,10 @@ bool reader( const std::string& fileName, std::map < std::string, std::map < std
         while (getline(lineStream, inputString, ';')) {
             tempVec.push_back(inputString);
         }
-
         // check file formating
         if (tempVec.size() != 4) {
             return false;
         }
-
         // sort read contents
         std::string stoChain = tempVec.at(0);
         std::string stoName = tempVec.at(1);
@@ -111,9 +111,73 @@ bool reader( const std::string& fileName, std::map < std::string, std::map < std
     return true;
 }
 
-void product_printer(const std::map < std::string, std::map < std::string, storeSt > >& shopsData) {
+// Function for handling set 'cheapStores', condition 'r' clears set before inserting new value
+void addCheapStore(std::set <std::string>& cheapStores, std::string newStore, char condition = ' ')
+{
+    if (condition == 'r') {
+        cheapStores.clear();
+    }
+    cheapStores.insert(newStore);
+}
+
+// Function for printing cheapest price and store(s) for a product
+void cheapest_printer(const std::map < std::string, std::map < std::string, storeSt > >& shopsData, const std::string& product)
+{
+    std::set <std::string> cheapStores = {};
+    // start value for lowest price is set to something absurd that is easy to compare
+    double lowestPrice = -2;
+
+    // go through all chains, their stores and products
+    for ( auto stoChain : shopsData) {
+        for ( auto store : stoChain.second ) {
+            for ( Product sPro : store.second.proSet ) {
+
+                // check if current product is the searched product
+                if (sPro.product_name == product)  {
+                    // save current chain and store
+                    std::string curChainStore = stoChain.first + " " + store.first;
+                    // lowest price is < 0 -> lowestPrice has its start value -> always change that value
+                    if (lowestPrice < 0) {
+                        lowestPrice = sPro.price;
+                        addCheapStore(cheapStores, curChainStore);
+
+                    // current price non-negative and less than current lowest price:
+                    } else if (sPro.price > 0 and sPro.price < lowestPrice) {
+                        // set new lowest price
+                        lowestPrice = sPro.price;
+                        // clear current store set before applying the new store
+                        addCheapStore(cheapStores, curChainStore, 'r');
+
+                    // current price is the cheapest price -> append this store to store set
+                    } else if (not (sPro.price < lowestPrice) and not (sPro.price > lowestPrice)) {
+                        addCheapStore(cheapStores, curChainStore);
+                    }
+                }
+            }
+        }
+    }
+    // lowest price has its start value; no products found
+    if (lowestPrice < -1) {
+        std::cout << "Product is not part of product selection."<< std::endl;
+
+    // lowest price is -1; product out of stock everywhere
+    } else if (lowestPrice < 0 and lowestPrice > -2) {
+        std::cout << "The product is temporarily out of stock everywhere." << std::endl;
+
+    // print cheapest price and stores
+    } else {
+        std::cout << std::fixed << std::setprecision(2) << lowestPrice << "e" << std::endl;
+        for (auto store : cheapStores) { std::cout << store << std::endl; }
+    }
+}
+
+// Function for printing all products in all stores
+void product_printer(const std::map < std::string, std::map < std::string, storeSt > >& shopsData)
+{
+    // set for storing product names
     std::set <std::string> printSet = {};
 
+    // go through all products in all stores
     for ( auto stoChain : shopsData) {
         for ( auto store : stoChain.second ) {
             for ( Product sPro : store.second.proSet ) {
@@ -121,9 +185,13 @@ void product_printer(const std::map < std::string, std::map < std::string, store
             }
         }
     }
+    // print out collected list
     for ( std::string proNam : printSet) {std::cout << proNam << std::endl;}
 }
-void error_printer(std::string errorType = "", std::string command = "") {
+
+// prints error messages of desired type
+void error_printer(std::string errorType = "", std::string command = "")
+{
     std::string errorMsg = "unknown ";
 
     if (errorType == "cmd") {
@@ -140,6 +208,7 @@ void error_printer(std::string errorType = "", std::string command = "") {
     std::cout << "Error: " << errorMsg << std::endl;
 }
 
+// main
 int main()
 {
     std::map < std::string, std::map < std::string, storeSt > > shopsData;
@@ -190,7 +259,13 @@ int main()
             }
 
         } else if (command == "cheapest") {
-            std::string product = parts.at(1);
+            if (parts.size() == 2) {
+                std::string product = parts.at(1);
+                cheapest_printer(shopsData, product);
+
+            } else {
+                error_printer("cmd", command);
+            }
 
         } else if (command == "products") {
             product_printer(shopsData);
