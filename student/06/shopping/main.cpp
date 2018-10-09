@@ -20,9 +20,16 @@ bool operator <(const Product& pro1, const Product& pro2) {
     return pro1.product_name < pro2.product_name;
 }
 
-// help function
-bool is_cheaper (const Product& pro1, const Product& pro2) {
-    return pro1.price < pro2.price;
+// Function for printing product name and price
+void product_printer (const Product& sProduct)
+{
+    std::cout << sProduct.product_name << " ";
+    if (sProduct.price < 0) {
+        std::cout << "out of stock";
+    } else {
+        std::cout << std::fixed << std::setprecision(2) << sProduct.price << "euros";
+    }
+    std::cout << std::endl;
 }
 
 // Struct for storing products of a single store
@@ -38,6 +45,25 @@ struct storeSt {
             proSet.insert(nPro);
         }
     };
+
+// prints error messages of desired type
+void error_printer(std::string errorType = "", std::string command = "")
+{
+    std::string errorMsg = "unknown ";
+
+    if (errorType == "cmd") {
+        errorMsg = "error in command " + command;
+
+    } else if ( errorType == "ch" ) {
+        errorMsg += "chain";
+    } else if ( errorType == "st" ) {
+        errorMsg += "store";
+    } else {
+        errorMsg += "command";
+    }
+
+    std::cout << "Error: " << errorMsg << std::endl;
+}
 
 // help function
 bool search_product (std::set < Product > targetSet, std::string searchName)
@@ -74,6 +100,7 @@ bool reader( const std::string& fileName, std::map < std::string, std::map < std
 {
     std::ifstream inptFile(fileName);
     if (not inptFile) {
+        std::cout << "Error: the input file cannot be opened" << std::endl;
         return false;
     }
     std::string inputString;
@@ -90,6 +117,7 @@ bool reader( const std::string& fileName, std::map < std::string, std::map < std
         }
         // check file formating
         if (tempVec.size() != 4) {
+            std::cout << "Error: the file has an erroneus line" << std::endl;
             return false;
         }
         // sort read contents
@@ -166,7 +194,7 @@ void cheapest_printer(const std::map < std::string, std::map < std::string, stor
 
     // print cheapest price and stores
     } else {
-        std::cout << std::fixed << std::setprecision(2) << lowestPrice << "e" << std::endl;
+        std::cout << std::fixed << std::setprecision(2) << lowestPrice << "euros" << std::endl;
         for (auto store : cheapStores) { std::cout << store << std::endl; }
     }
 }
@@ -189,25 +217,6 @@ void product_printer(const std::map < std::string, std::map < std::string, store
     for ( std::string proNam : printSet) {std::cout << proNam << std::endl;}
 }
 
-// prints error messages of desired type
-void error_printer(std::string errorType = "", std::string command = "")
-{
-    std::string errorMsg = "unknown ";
-
-    if (errorType == "cmd") {
-        errorMsg = "error in command " + command;
-
-    } else if ( errorType == "ch" ) {
-        errorMsg += "chain";
-    } else if ( errorType == "st" ) {
-        errorMsg += "store";
-    } else {
-        errorMsg += "command";
-    }
-
-    std::cout << "Error: " << errorMsg << std::endl;
-}
-
 // main
 int main()
 {
@@ -218,7 +227,6 @@ int main()
     getline(std::cin, fileName);
 
     if (not reader(fileName, shopsData)) {
-        std::cout << "Error: the input file cannot be opened" << std::endl;
         return EXIT_FAILURE;
     }
 
@@ -254,6 +262,15 @@ int main()
                 std::string inptChain = parts.at(1);
                 std::string store = parts.at(2);
 
+                if (shopsData.find(inptChain) != shopsData.end()){
+                    if ( shopsData.at(inptChain).find(store) != shopsData.at(inptChain).end() ) {
+                        for (auto sProduct : shopsData.at(inptChain).at(store).proSet) {
+                            product_printer(sProduct);
+                        }
+                    } else {error_printer("st");}
+
+                } else { error_printer("ch"); }
+
             } else {
                 error_printer("cmd", command);
             }
@@ -282,7 +299,7 @@ int main()
                 }
             }
 
-        } else if(command == "Q" or command == "q"){
+        } else if(command == "quit"){
            return EXIT_SUCCESS;
         } else {
             error_printer();
