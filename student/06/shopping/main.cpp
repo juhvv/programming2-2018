@@ -27,7 +27,7 @@ void product_printer (const Product& sProduct)
     if (sProduct.price < 0) {
         std::cout << "out of stock";
     } else {
-        std::cout << std::fixed << std::setprecision(2) << sProduct.price << "euros";
+        std::cout << std::fixed << std::setprecision(2) << sProduct.price << " euros";
     }
     std::cout << std::endl;
 }
@@ -55,7 +55,7 @@ void error_printer(std::string errorType = "", std::string command = "")
         errorMsg = "error in command " + command;
 
     } else if ( errorType == "ch" ) {
-        errorMsg += "chain";
+        errorMsg = "an " + errorMsg + "chain";
     } else if ( errorType == "st" ) {
         errorMsg += "store";
     } else {
@@ -65,32 +65,25 @@ void error_printer(std::string errorType = "", std::string command = "")
     std::cout << "Error: " << errorMsg << std::endl;
 }
 
-// help function
-bool search_product (std::set < Product > targetSet, std::string searchName)
-{
-    for (Product pro : targetSet) {
-        if (pro.product_name == searchName) { return true; }
-    }
-    return false;
-}
-
 // Function for saving data read from file to programs data structure
 void data_handler(std::map < std::string, std::map < std::string, storeSt > >& shopsData, const std::string& stoChain, const std::string& stoName, const std::string& proName, const double& proPrice )
 {
-
+    // create new product
     Product newPro = {proName, proPrice};
 
+    // add new store chain if necessary
     if (shopsData.find(stoChain) == shopsData.end()) {
         shopsData.insert( {stoChain, {}} );
     }
 
     std::map<std::string, storeSt> &storesInChain = shopsData.at(stoChain);
+
+    // add new store if necessary and add new product to selection using method 'insert_pro'
     if ( storesInChain.find(stoName) == storesInChain.end() ) {
         storeSt newStore = {{newPro}};
         storesInChain.insert({stoName, newStore});
 
     } else {
-        //std::set < storeInfo >::iterator storeIter = cStores.begin();
         storesInChain.at(stoName).insert_pro(newPro);
     }
 }
@@ -113,11 +106,16 @@ bool reader( const std::string& fileName, std::map < std::string, std::map < std
         std::vector <std::string> tempVec = {};
 
         while (getline(lineStream, inputString, ';')) {
+            // check that none of the fields are empty
+            if (inputString == "") {
+                std::cout << "Error: the file has an erroneous line" << std::endl;
+                return false;
+            }
             tempVec.push_back(inputString);
         }
         // check file formating
         if (tempVec.size() != 4) {
-            std::cout << "Error: the file has an erroneus line" << std::endl;
+            std::cout << "Error: the file has an erroneous line" << std::endl;
             return false;
         }
         // sort read contents
@@ -194,7 +192,7 @@ void cheapest_printer(const std::map < std::string, std::map < std::string, stor
 
     // print cheapest price and stores
     } else {
-        std::cout << std::fixed << std::setprecision(2) << lowestPrice << "euros" << std::endl;
+        std::cout << std::fixed << std::setprecision(2) << lowestPrice << " euros" << std::endl;
         for (auto store : cheapStores) { std::cout << store << std::endl; }
     }
 }
@@ -220,16 +218,19 @@ void product_printer(const std::map < std::string, std::map < std::string, store
 // main
 int main()
 {
-    std::map < std::string, std::map < std::string, storeSt > > shopsData;
+    // main data structure
+    std::map < std::string, std::map < std::string, storeSt > > mainStoresData;
 
+    // file reading
     std::string fileName;
     std::cout << "Input file: ";
     getline(std::cin, fileName);
 
-    if (not reader(fileName, shopsData)) {
+    if (not reader(fileName, mainStoresData)) {
         return EXIT_FAILURE;
     }
 
+    // command interface
     while(true){
 
         std::string line = "";
@@ -237,34 +238,51 @@ int main()
 
         getline(std::cin, line);
 
+        // process user input
         std::stringstream lineStream(line);
         std::vector<std::string> parts = {};
 
         while (getline(lineStream, line, ' ')) { parts.push_back(line); }
         std::string command = parts.at(0);
 
+        // prints all store chains
         if (command == "chains") {
-            for ( auto chain : shopsData ) { std::cout << chain.first << std::endl;}
+            // check command
+            if (parts.size() == 1) {
+                for ( auto chain : mainStoresData ) { std::cout << chain.first << std::endl;}
 
+            } else {
+                error_printer("cmd", command);
+            }
+        // prints all stores of a chain
         } else if (command == "stores") {
+            // check command
             if (parts.size() == 2) {
                 std::string inptChain = parts.at(1);
-                if (shopsData.find(inptChain) != shopsData.end()){
-                    for ( auto store : shopsData.at(inptChain) ) { std::cout << store.first << std::endl; }
-                } else { error_printer("ch"); }
+
+                // check that searched chain excists
+                if (mainStoresData.find(inptChain) != mainStoresData.end()){
+                    for ( auto store : mainStoresData.at(inptChain) ) { std::cout << store.first << std::endl; }
+                } else {
+                    error_printer("ch");
+                }
 
             } else {
                 error_printer("cmd", command);
             }
 
+        // prints selection of products of a store
         } else if (command == "selection") {
+            // check command
             if (parts.size() == 3) {
                 std::string inptChain = parts.at(1);
                 std::string store = parts.at(2);
 
-                if (shopsData.find(inptChain) != shopsData.end()){
-                    if ( shopsData.at(inptChain).find(store) != shopsData.at(inptChain).end() ) {
-                        for (auto sProduct : shopsData.at(inptChain).at(store).proSet) {
+            // check that searched chain and store excist
+                if (mainStoresData.find(inptChain) != mainStoresData.end()){
+                    if ( mainStoresData.at(inptChain).find(store) != mainStoresData.at(inptChain).end() ) {
+                        // prints products
+                        for (auto sProduct : mainStoresData.at(inptChain).at(store).proSet) {
                             product_printer(sProduct);
                         }
                     } else {error_printer("st");}
@@ -275,32 +293,31 @@ int main()
                 error_printer("cmd", command);
             }
 
+        // prints cheapest price and store(s) of searched product
         } else if (command == "cheapest") {
+            // check command
             if (parts.size() == 2) {
                 std::string product = parts.at(1);
-                cheapest_printer(shopsData, product);
+                cheapest_printer(mainStoresData, product);
 
             } else {
                 error_printer("cmd", command);
             }
 
+        // prints all products in all stores
         } else if (command == "products") {
-            product_printer(shopsData);
-        }
+            // check command
+            if (parts.size() == 1) {
+                product_printer(mainStoresData);
 
-        else if (command == "debug" or command == "dd") {
-            for ( auto store : shopsData) {
-                std::cout << store.first << std::endl;
-                for ( auto sstore : store.second ) {
-                    std::cout << "--" << sstore.first << std::endl;
-                    for ( Product sPro : sstore.second.proSet ) {
-                        std::cout << "---" << sPro.product_name << " " << sPro.price << std::endl;
-                    }
-                }
+            } else {
+                error_printer("cmd", command);
             }
-
-        } else if(command == "quit"){
+        // exits program
+        }  else if(command == "quit"){
            return EXIT_SUCCESS;
+
+        // unknown command
         } else {
             error_printer();
         }
