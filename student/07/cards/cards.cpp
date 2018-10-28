@@ -22,22 +22,35 @@ Cards::~Cards()
     }
 }
 
-int Cards::recursive_print_reverse(Cards::Card_data *top, std::ostream &s)
+// recursive function for finding second last element of list
+Cards::Card_data *Cards::get_second_last(Cards::Card_data* thisCard)
 {
+    if (thisCard->next->next == nullptr) {
+        return thisCard;
+
+    } else {
+        return get_second_last(thisCard->next);
+    }
+}
+
+int Cards::recursive_print_reverse(Cards::Card_data *top, std::ostream &s, int n)
+{
+    ++n;
     if (top->next == nullptr) {
         return top->data;
 
     } else {
-        s << recursive_print_reverse(top->next, s) << std::endl;
+        s << n << ": " << recursive_print_reverse(top->next, s, n) << std::endl;
         return top->data;
     }
 }
 
-void Cards::recursive_print(Cards::Card_data* top, std::ostream &s)
+void Cards::recursive_print(Cards::Card_data* top, std::ostream &s, int n)
 {
-    s << top->data << std::endl;
+    ++n;
+    s << n << ": " << top->data << std::endl;
     if (top->next != nullptr) {
-        recursive_print(top->next, s);
+        recursive_print(top->next, s, n);
     }
 }
 
@@ -45,11 +58,8 @@ void Cards::recursive_print(Cards::Card_data* top, std::ostream &s)
 // Adds a new card with the given id as the topmost element
 void Cards::add(int id)
 {
-    //delet this
-    std::cout << id << std::endl;
     Card_data* newCard = new Card_data{id, top_};
     top_ = newCard;
-
 }
 
 // Prints the content of the data structure with ordinal numbers
@@ -57,7 +67,7 @@ void Cards::add(int id)
 void Cards::print_from_top_to_bottom(std::ostream& s)
 {
     if (top_ != nullptr) {
-        recursive_print(top_, s);
+        recursive_print(top_, s, 0);
     }
 
 }
@@ -96,13 +106,55 @@ bool Cards::remove(int& id)
 // Moves the last element of the data structure as the first one.
 bool Cards::bottom_to_top()
 {
-    return false;
+    if (top_ != nullptr and top_->next != nullptr) {
+        // get important addresses
+        Cards::Card_data* secondLast = get_second_last(top_);
+        Cards::Card_data* last = secondLast->next;
+        Cards::Card_data* first = top_;
+
+        //std::cout << "second last card: " << secondLast->data << std::endl;
+
+        // start moving cards
+        // last card is now top card
+        top_ = last;
+        // 'first' is now second card
+        top_->next = first;
+        // second last card is now last card,  point 'next' nowhere
+        secondLast->next = nullptr;
+
+        return true;
+
+    } else {
+        return false;
+    }
 }
 
 // Moves the first element of the data structure as the last one.
 bool Cards::top_to_bottom()
 {
-    return false;
+    if (top_ != nullptr and top_->next != nullptr) {
+        // get important addresses
+        Cards::Card_data* secondLast = get_second_last(top_);
+        Cards::Card_data* last = secondLast->next;
+        Cards::Card_data* first = top_;
+        Cards::Card_data* second = top_->next;
+
+        //std::cout << "second last card: " << secondLast->data << std::endl;
+
+        // start moving cards
+        // card next to last card is now 'first' i.e last card is now second last
+        last->next = first;
+        // first card is now last card, point 'next' nowhere
+        first->next = nullptr;
+        // second card is now first card
+        top_ = second;
+
+
+        return true;
+
+    } else {
+        return false;
+    }
 }
 
 // Prints the content of the data structure with ordinal numbers
@@ -110,6 +162,6 @@ bool Cards::top_to_bottom()
 void Cards::print_from_bottom_to_top(std::ostream& s)
 {
     if (top_ != nullptr) {
-        s << recursive_print_reverse(top_, s) << std::endl;
+        s << "1: " <<recursive_print_reverse(top_, s, 1) << std::endl;
     }
 }
