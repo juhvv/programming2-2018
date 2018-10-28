@@ -43,7 +43,7 @@ class Cards {
       };
 
       Card_data* get_second_last(Card_data* thisCard);
-      int recursive_print_reverse(Card_data* top, std::ostream& s, int n);
+      int recursive_print_reverse(Card_data* top, std::ostream& s, int& n);
       void recursive_print(Card_data* top, std::ostream& s, int n);// You can use this function in the implementation of method print_from_bottom_to_top.
       Card_data* top_;
 };

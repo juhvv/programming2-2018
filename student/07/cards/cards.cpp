@@ -33,14 +33,16 @@ Cards::Card_data *Cards::get_second_last(Cards::Card_data* thisCard)
     }
 }
 
-int Cards::recursive_print_reverse(Cards::Card_data *top, std::ostream &s, int n)
+int Cards::recursive_print_reverse(Cards::Card_data *top, std::ostream &s, int& n)
 {
-    ++n;
     if (top->next == nullptr) {
+        //s << n << ": " << top->data << std::endl;
+        ++n;
         return top->data;
 
     } else {
         s << n << ": " << recursive_print_reverse(top->next, s, n) << std::endl;
+        ++n;
         return top->data;
     }
 }
@@ -162,6 +164,7 @@ bool Cards::top_to_bottom()
 void Cards::print_from_bottom_to_top(std::ostream& s)
 {
     if (top_ != nullptr) {
-        s << "1: " <<recursive_print_reverse(top_, s, 1) << std::endl;
+        int n = 0;
+        s << n << ": " <<recursive_print_reverse(top_, s, n) << std::endl;
     }
 }
