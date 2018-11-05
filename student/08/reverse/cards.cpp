@@ -1,6 +1,5 @@
 #include <iostream>
 #include <memory>
-#include <algorithm>
 #include "cards.hh"
 
 
