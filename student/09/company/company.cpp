@@ -1,3 +1,10 @@
+/* TIE-02207
+ * Assignment 9.3 Company
+ * Juho Viljamaa 275354 viljamaa@student.tut.fi
+ * .cpp file for given header file
+ */
+
+
 #include "company.hh"
 
 // constructor of class Company
