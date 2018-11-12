@@ -91,6 +91,7 @@ void Company::printSubordinates(const std::string &id, std::ostream &output) con
 {
     Employee* empPtr = nullptr;
 
+    // getPointer check and pointer redirection
     if (getPointer(id, empPtr, output)) {
         printGroup(id, "subordinates", VectorToIdSet(empPtr->subordinates_),
                    output);
@@ -107,13 +108,14 @@ void Company::printBoss(const std::string &id, std::ostream &output) const
     Employee* empPtr = nullptr;
     IdSet printSet = {};
 
+    // getPointer check and pointer redirection
     if (getPointer(id, empPtr, output)) {
         // check if an employee has a boss
         if (empPtr->boss_ != nullptr) {
             printSet.insert(empPtr->boss_->id_);
         }
         // print using printGroup
-        printGroup(id, "bosses", printSet, output);
+        printGroup(id, "boss", printSet, output);
     }
 }
 
@@ -131,9 +133,9 @@ void Company::printColleagues(const std::string &id, std::ostream &output) const
     // getPointer check and pointer redirection
     if (getPointer(id, empPtr, output)) {
         for (auto idPair : employeeMainMap_) {
-            // person is id´s colleague if they have the same boss
+            // person is id's colleague if they have the same boss
             if (idPair.second->boss_ == empPtr->boss_
-                    and idPair.second != empPtr) {
+                    and idPair.second != empPtr and empPtr->boss_ != nullptr) {
                 colVec.push_back(idPair.second);
             }
         }
@@ -176,29 +178,36 @@ void Company::printDepartment(const std::string &id, std::ostream &output) const
  *  Param1: ID of the employee
  *  Param2: Output-stream for printing
  */
-void Company::printLongestTimeInLineManagement(const std::string &id, std::ostream &output) const
+void Company::printLongestTimeInLineManagement(const std::string &id,
+                                               std::ostream &output) const
 {
     Employee* empPtr = nullptr;
+    // pointer to person with longest time served
     Employee* longestEmpPtr = nullptr;
 
+    // getPointer check and pointer redirection
     if (getPointer(id, empPtr, output)) {
         longestEmpPtr = empPtr;
         double longestTime = empPtr->time_in_service_;
-        for (auto subordinate : empPtr->subordinates_) {
 
+        for (auto subordinate : empPtr->subordinates_) {
+            // check if subordinate has longer served time than current longest time
             if (subordinate->time_in_service_ > longestTime) {
+                // redirect longestEmpPtr
                 longestEmpPtr = subordinate;
                 longestTime = subordinate->time_in_service_;
             }
         }
 
+        // determine suitable output format
         if (longestEmpPtr->id_ == id) {
             output << "With the time of " << longestTime << ", " << id
                    << " is the longest-served employee in their line management."
                    << std::endl;
         } else {
-            output << "With the time of " << longestTime << ", " << longestEmpPtr->id_
-                   << " is the longest-served employee in " << id << "'s line management."
+            output << "With the time of " << longestTime << ", " <<
+                      longestEmpPtr->id_ << " is the longest-served employee in "
+                   << id << "'s line management."
                    << std::endl;
         }
 
@@ -236,7 +245,7 @@ bool Company::getPointer(const std::string &id, Employee *&empPtr,
 {
     // check if key 'id' exists
     if (employeeMainMap_.find(id) != employeeMainMap_.end()) {
-        // redirect reference pointer
+        // redirect input pointer
         empPtr = employeeMainMap_.at(id);
         return true;
 
@@ -249,7 +258,7 @@ bool Company::getPointer(const std::string &id, Employee *&empPtr,
     }
 }
 
-// Turns a vector of employees to a set of IDs.
+// Turns a vector of employees to a set of IDs ('IdSet' type).
 IdSet Company::VectorToIdSet(const std::vector<Employee *> &container) const
 {
     IdSet returnSet = {};
@@ -260,13 +269,15 @@ IdSet Company::VectorToIdSet(const std::vector<Employee *> &container) const
     return returnSet;
 }
 
-// Prints the the data in a container.
+// Prints the the data in a container of 'IdSet' type.
 void Company::printGroup(const std::string &id, const std::string &group,
                          const IdSet &container, std::ostream &output) const
 {
+    // check if given container is empty
     if (container.size() != 0) {
         output << id << " has " << container.size() << " " << group
                << ":" << std::endl;
+
         for (auto person : container) {
             output << person << std::endl;
         }
