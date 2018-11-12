@@ -106,6 +106,7 @@ void Company::printBoss(const std::string &id, std::ostream &output) const
     IdSet printSet = {};
 
     if (getPointer(id, empPtr, output)) {
+        // check if an employee has a boss
         if (empPtr->boss_ != nullptr) {
             printSet.insert(empPtr->boss_->id_);
         }
@@ -114,14 +115,57 @@ void Company::printBoss(const std::string &id, std::ostream &output) const
     }
 }
 
+/* Description: Prints the colleagues for the employee.
+ *  (Employees who shares their direct boss)
+ * Parameters:
+ *  Param1: ID of the employee
+ *  Param2: Output-stream for printing
+ */
 void Company::printColleagues(const std::string &id, std::ostream &output) const
 {
+    Employee* empPtr = nullptr;
+    std::vector<Employee *> colVec;
 
+    // getPointer check and pointer redirection
+    if (getPointer(id, empPtr, output)) {
+        for (auto idPair : employeeMainMap_) {
+            // person is id´s colleague if they have the same boss
+            if (idPair.second->boss_ == empPtr->boss_
+                    and idPair.second != empPtr) {
+                colVec.push_back(idPair.second);
+            }
+        }
+        // print colleagues
+        printGroup(id, "colleagues", VectorToIdSet(colVec), output);
+    }
 }
 
 void Company::printDepartment(const std::string &id, std::ostream &output) const
 {
+    Employee* empPtr = nullptr;
+    std::vector<Employee *> colVec;
 
+    // getPointer check and pointer redirection
+    if (getPointer(id, empPtr, output)) {
+        // find big boss of id
+        Employee* bigBoss = getBigBoss(empPtr);
+
+        for (auto idPair : employeeMainMap_) {
+            Employee* otherEmp = idPair.second;
+
+            // make sure 'otherEmp' doesn't point to same place as 'empPtr'
+            if (otherEmp != empPtr) {
+                // person is id's department colleague if they have the same
+                // department and same big boss
+                if (otherEmp->department_ == empPtr->department_
+                        and getBigBoss(otherEmp) == bigBoss) {
+                    colVec.push_back(idPair.second);
+                }
+            }
+        }
+        // print colleagues
+        printGroup(id, "department colleagues", VectorToIdSet(colVec), output);
+    }
 }
 
 void Company::printLongestTimeInLineManagement(const std::string &id, std::ostream &output) const
@@ -194,3 +238,16 @@ void Company::printGroup(const std::string &id, const std::string &group, const 
         output << id << " has no " << group << "." << std::endl;
     }
 }
+
+// returns pointer to boss of id's hierarchy (recursive function)
+Employee *Company::getBigBoss(Employee *curEmpPtr) const
+{
+    if (curEmpPtr->boss_ == nullptr) {
+        return curEmpPtr;
+
+    } else {
+        return getBigBoss(curEmpPtr->boss_);
+    }
+}
+
+

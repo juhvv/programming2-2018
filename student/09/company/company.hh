@@ -195,6 +195,9 @@ private:
     void printGroup(const std::string& id, const std::string& group,
                     const IdSet& container, std::ostream& output) const;
 
+    // returns pointer to boss of id's hierarchy (recursive function)
+    Employee* getBigBoss(Employee* curEmpPtr) const;
+
     // main data structure
     std::map<std::string, Employee*> employeeMainMap_;
 
