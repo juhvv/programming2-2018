@@ -1,10 +1,7 @@
 #include "company.hh"
 
 // constructor of class Company
-Company::Company()
-{
-
-}
+Company::Company() {}
 
 // destructor of class Company
 Company::~Company()
@@ -25,7 +22,8 @@ Company::~Company()
  *  If employees's ID is already in datastructure:
  *      "Error. Employee already added."
  */
-void Company::addNewEmployee(const std::string &id, const std::string &dep, const double &time, std::ostream &output)
+void Company::addNewEmployee(const std::string &id, const std::string &dep,
+                             const double &time, std::ostream &output)
 {
     // check if employee already excists in data structure
     if (employeeMainMap_.find(id) == employeeMainMap_.end()) {
@@ -61,19 +59,59 @@ void Company::printEmployees(std::ostream &output) const
     }
 }
 
-void Company::addRelation(const std::string &subordinate, const std::string &boss, std::ostream &output)
+/* Description: Adds new boss-subordinate relation
+ * Parameters:
+ *  Param1: ID of the subordinate
+ *  Param2: ID of the boss
+ *  Param3: Output-stream for error-printing
+ */
+void Company::addRelation(const std::string &subordinate,
+                          const std::string &boss, std::ostream &output)
 {
+    Employee* bossPtr = nullptr;
+    Employee* subPtr = nullptr;
 
+    // check that both employees excist in main data structure using getPointer
+    if (getPointer(subordinate, subPtr, output, false) and
+            getPointer(boss, bossPtr, output, false)) {
+
+        subPtr->boss_ = bossPtr;
+        bossPtr->subordinates_.push_back(subPtr);
+    }
 }
 
+/* Description: Prints direct subordinates for the employee.
+ * Parameters:
+ *  Param1: ID of the employee
+ *  Param2: Output-stream for printing
+ */
 void Company::printSubordinates(const std::string &id, std::ostream &output) const
 {
+    Employee* empPtr = nullptr;
 
+    if (getPointer(id, empPtr, output)) {
+        printGroup(id, "subordinates", VectorToIdSet(empPtr->subordinates_),
+                   output);
+    }
 }
 
+/* Description: Prints the direct boss of the employee.
+ * Parameters:
+ *  Param1: ID of the employee
+ *  Param2: Output-stream for printing
+ */
 void Company::printBoss(const std::string &id, std::ostream &output) const
 {
+    Employee* empPtr = nullptr;
+    IdSet printSet = {};
 
+    if (getPointer(id, empPtr, output)) {
+        if (empPtr->boss_ != nullptr) {
+            printSet.insert(empPtr->boss_->id_);
+        }
+        // print using printGroup
+        printGroup(id, "bosses", printSet, output);
+    }
 }
 
 void Company::printColleagues(const std::string &id, std::ostream &output) const
@@ -106,3 +144,53 @@ void Company::printBossesN(const std::string &id, const int n, std::ostream &out
 
 }
 
+// private methods
+
+/* Returns true if key 'id' excists in 'employeeMainMap', else false. If 'id' is
+ * present, 'empPtr' is also redirected to point at the same place that value
+ * of key 'id'. Else an error message is printed if parameter 'printError'
+ * is 'true' (default value).
+ */
+bool Company::getPointer(const std::string &id, Employee *&empPtr,
+                         std::ostream &output, bool printError) const
+{
+    // check if key 'id' excists
+    if (employeeMainMap_.find(id) != employeeMainMap_.end()) {
+        // redirect reference pointer
+        empPtr = employeeMainMap_.at(id);
+        return true;
+
+    } else {
+        // no error printing if parameter 'printError' is false
+        if (printError) {
+            output << "Error. " << id << " not found." << std::endl;
+        }
+        return false;
+    }
+}
+
+// Turns a vector of employees to a set of IDs.
+IdSet Company::VectorToIdSet(const std::vector<Employee *> &container) const
+{
+    IdSet returnSet = {};
+    for (auto personPtr : container) {
+        returnSet.insert(personPtr->id_);
+    }
+
+    return returnSet;
+}
+
+// Prints the the data in a container.
+void Company::printGroup(const std::string &id, const std::string &group, const IdSet &container, std::ostream &output) const
+{
+    if (container.size() != 0) {
+        output << id << " has " << container.size() << " " << group
+               << ":" << std::endl;
+        for (auto person : container) {
+            output << person << std::endl;
+        }
+
+    } else {
+        output << id << " has no " << group << "." << std::endl;
+    }
+}

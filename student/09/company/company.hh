@@ -179,7 +179,10 @@ private:
      */
 
     // Return a pointer for ID.
-    Employee* getPointer(const std::string& id) const;
+
+    bool getPointer(const std::string& id, Employee*& empPtr,
+                    std::ostream& output, bool printError = true) const;
+    //Employee* getPointer(const std::string& id) const;
 
     // Printing errors.
     void printNotFound(const std::string& id,
@@ -192,6 +195,7 @@ private:
     void printGroup(const std::string& id, const std::string& group,
                     const IdSet& container, std::ostream& output) const;
 
+    // main data structure
     std::map<std::string, Employee*> employeeMainMap_;
 
 };
