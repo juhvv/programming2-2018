@@ -198,9 +198,14 @@ private:
     // returns pointer to boss of id's hierarchy (recursive function)
     Employee* getBigBoss(Employee* curEmpPtr) const;
 
+    // returns IdSet of all subordinates of id
+    IdSet getSubs(Employee* empPtr) const;
+
+    // returns pointer to employee with the longest time served (recursive function)
+    Employee* getLongTime(Employee* curEmp, double longestTime) const;
+
     // main data structure
     std::map<std::string, Employee*> employeeMainMap_;
-
 };
 
 #endif // COMPANY_HH

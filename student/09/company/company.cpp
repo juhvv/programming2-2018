@@ -1,7 +1,9 @@
 #include "company.hh"
 
 // constructor of class Company
-Company::Company() {}
+Company::Company()
+{
+}
 
 // destructor of class Company
 Company::~Company()
@@ -25,7 +27,7 @@ Company::~Company()
 void Company::addNewEmployee(const std::string &id, const std::string &dep,
                              const double &time, std::ostream &output)
 {
-    // check if employee already excists in data structure
+    // check if employee already exists in data structure
     if (employeeMainMap_.find(id) == employeeMainMap_.end()) {
         // create new employee struct and store the pointer to 'employeeMainMap'
         Employee* newEmployee = new Employee{};
@@ -71,7 +73,7 @@ void Company::addRelation(const std::string &subordinate,
     Employee* bossPtr = nullptr;
     Employee* subPtr = nullptr;
 
-    // check that both employees excist in main data structure using getPointer
+    // check that both employees exist in main data structure using getPointer
     if (getPointer(subordinate, subPtr, output, false) and
             getPointer(boss, bossPtr, output, false)) {
 
@@ -168,29 +170,63 @@ void Company::printDepartment(const std::string &id, std::ostream &output) const
     }
 }
 
+/* Description: Prints the employee with the shortest time in service
+ *  in the ID's line management.
+ * Parameters:
+ *  Param1: ID of the employee
+ *  Param2: Output-stream for printing
+ */
 void Company::printLongestTimeInLineManagement(const std::string &id, std::ostream &output) const
 {
+    Employee* empPtr = nullptr;
+    Employee* longestEmpPtr = nullptr;
 
+    if (getPointer(id, empPtr, output)) {
+        longestEmpPtr = empPtr;
+        double longestTime = empPtr->time_in_service_;
+        for (auto subordinate : empPtr->subordinates_) {
+
+            if (subordinate->time_in_service_ > longestTime) {
+                longestEmpPtr = subordinate;
+                longestTime = subordinate->time_in_service_;
+            }
+        }
+
+        if (longestEmpPtr->id_ == id) {
+            output << "With the time of " << longestTime << ", " << id
+                   << " is the longest-served employee in their line management."
+                   << std::endl;
+        } else {
+            output << "With the time of " << longestTime << ", " << longestEmpPtr->id_
+                   << " is the longest-served employee in " << id << "'s line management."
+                   << std::endl;
+        }
+
+    }
 }
 
 void Company::printShortestTimeInLineManagement(const std::string &id, std::ostream &output) const
 {
-
+    std::string dummyStr = id;
+    if (output) {}
 }
 
 void Company::printSubordinatesN(const std::string &id, const int n, std::ostream &output) const
 {
+    std::string dummyStr = id;
 
+    if (output and n == 1) {}
 }
 
 void Company::printBossesN(const std::string &id, const int n, std::ostream &output) const
 {
-
+    std::string dummyStr = id;
+    if (output and n == 1) {}
 }
 
 // private methods
 
-/* Returns true if key 'id' excists in 'employeeMainMap', else false. If 'id' is
+/* Returns true if key 'id' exists in 'employeeMainMap', else false. If 'id' is
  * present, 'empPtr' is also redirected to point at the same place that value
  * of key 'id'. Else an error message is printed if parameter 'printError'
  * is 'true' (default value).
@@ -198,7 +234,7 @@ void Company::printBossesN(const std::string &id, const int n, std::ostream &out
 bool Company::getPointer(const std::string &id, Employee *&empPtr,
                          std::ostream &output, bool printError) const
 {
-    // check if key 'id' excists
+    // check if key 'id' exists
     if (employeeMainMap_.find(id) != employeeMainMap_.end()) {
         // redirect reference pointer
         empPtr = employeeMainMap_.at(id);
@@ -225,7 +261,8 @@ IdSet Company::VectorToIdSet(const std::vector<Employee *> &container) const
 }
 
 // Prints the the data in a container.
-void Company::printGroup(const std::string &id, const std::string &group, const IdSet &container, std::ostream &output) const
+void Company::printGroup(const std::string &id, const std::string &group,
+                         const IdSet &container, std::ostream &output) const
 {
     if (container.size() != 0) {
         output << id << " has " << container.size() << " " << group
@@ -249,5 +286,4 @@ Employee *Company::getBigBoss(Employee *curEmpPtr) const
         return getBigBoss(curEmpPtr->boss_);
     }
 }
-
 
