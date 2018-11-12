@@ -178,15 +178,13 @@ private:
      * to make things easier and to avoid "copy-paste-coding"
      */
 
-    // Return a pointer for ID.
-
+    /* Returns true if key 'id' exists in 'employeeMainMap', else false. If 'id' is
+     * present, 'empPtr' is also redirected to point at the same place that value
+     * of key 'id'. Else an error message is printed if parameter 'printError'
+     * is 'true' (default value).
+     */
     bool getPointer(const std::string& id, Employee*& empPtr,
                     std::ostream& output, bool printError = true) const;
-    //Employee* getPointer(const std::string& id) const;
-
-    // Printing errors.
-    void printNotFound(const std::string& id,
-                       std::ostream& output) const;
 
     // Turns a vector of employees to a set of IDs.
     IdSet VectorToIdSet(const std::vector<Employee*> &container) const;
@@ -197,12 +195,6 @@ private:
 
     // returns pointer to boss of id's hierarchy (recursive function)
     Employee* getBigBoss(Employee* curEmpPtr) const;
-
-    // returns IdSet of all subordinates of id
-    IdSet getSubs(Employee* empPtr) const;
-
-    // returns pointer to employee with the longest time served (recursive function)
-    Employee* getLongTime(Employee* curEmp, double longestTime) const;
 
     // main data structure
     std::map<std::string, Employee*> employeeMainMap_;

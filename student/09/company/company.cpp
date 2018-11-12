@@ -151,6 +151,12 @@ void Company::printColleagues(const std::string &id, std::ostream &output) const
     }
 }
 
+/* Description: Prints all-level colleagues for the employee.
+ *  (Employees who share their department and belong to the same hierarchy)
+ * Parameters:
+ *  Param1: ID of the person
+ *  Param2: Output-stream for printing
+ */
 void Company::printDepartment(const std::string &id, std::ostream &output) const
 {
     Employee* empPtr = nullptr;
@@ -179,7 +185,7 @@ void Company::printDepartment(const std::string &id, std::ostream &output) const
     }
 }
 
-/* Description: Prints the employee with the shortest time in service
+/* Description: Prints the employee with the longest time in service
  *  in the ID's line management.
  * Parameters:
  *  Param1: ID of the employee
@@ -221,6 +227,7 @@ void Company::printLongestTimeInLineManagement(const std::string &id,
     }
 }
 
+// Bonus tasks (not implemented)
 void Company::printShortestTimeInLineManagement(const std::string &id, std::ostream &output) const
 {
     std::string dummyStr = id;
