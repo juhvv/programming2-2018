@@ -11,11 +11,12 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(timer, &QTimer::timeout, this, &MainWindow::tickSecs);
     connect(ui->startButton, &QPushButton::clicked, this, &MainWindow::timerStartStop);
     connect(ui->resetButton, &QPushButton::clicked, this, &MainWindow::resetCounters);
-    connect(ui->resetButton, &QPushButton::clicked, this, &MainWindow::timerStartStop);
     connect(ui->closeButton, &QPushButton::clicked, this, &MainWindow::close);
 
-    resetCounters();
+    ui->lcdNumberMin->display(0);
+    ui->lcdNumberSec->display(0);
 }
+
 
 MainWindow::~MainWindow()
 {
@@ -53,6 +54,8 @@ void MainWindow::tickSecs()
 
 void MainWindow::resetCounters()
 {
+    timer->stop();
     ui->lcdNumberMin->display(0);
     ui->lcdNumberSec->display(0);
+    timer->start(1000);
 }
