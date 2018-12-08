@@ -79,6 +79,13 @@ void MainWindow::reelStopped(const std::string& middle_sym) {
 
 }
 
+void MainWindow::spin_reel()
+{
+    for (Reel* reel : reels_) {
+        reel->test_index();
+    }
+}
+
 void MainWindow::initUi() {
     // Initialize and display current funds etc.
 
@@ -96,6 +103,15 @@ void MainWindow::initUi() {
 
     // Create each Reel with its own specific labels, etc.
     // * Create the Reels yourself, nullptr is just a dummy value here.
-    Reel* reel = nullptr;
-    connect(reel, &Reel::stopped, this, &MainWindow::reelStopped);
+    const std::vector<QLabel*> labelVec1 = {ui_.reel1_lab1, ui_.reel1_lab2, ui_.reel1_lab3};
+    const std::vector<QLabel*> labelVec2 = {ui_.reel2_lab1, ui_.reel2_lab2, ui_.reel2_lab3};
+    const std::vector<QLabel*> labelVec3 = {ui_.reel3_lab1, ui_.reel3_lab2, ui_.reel3_lab3};
+
+    Reel* reel1 = new Reel(labelVec1, ui_.lock1_btn, &fruits_, rng);
+    Reel* reel2 = new Reel(labelVec2, ui_.lock2_btn, &fruits_, rng);
+    Reel* reel3 = new Reel(labelVec3, ui_.lock2_btn, &fruits_, rng);
+    reels_ = {reel1, reel2, reel3};
+
+    connect(reel1, &Reel::stopped, this, &MainWindow::reelStopped);
+    connect(ui_.btn_start, &QPushButton::clicked, this, &MainWindow::spin_reel);
 }

@@ -59,7 +59,7 @@ public:
     ~Reel();
 
 public slots:
-    void spin_to(std::string& picId, int& spinTime);
+    //void spin_to(std::string& picId, int& spinTime);
     void test_index();
 
 signals:
@@ -82,6 +82,11 @@ private:
 
     Reel_data* first_;
     Reel_data* last_;
+    Reel_data* printPtr_ = nullptr;
+
+    QLabel* lab1_;
+    QLabel* lab2_;
+    QLabel* lab3_;
 
 };  // class Reel
 

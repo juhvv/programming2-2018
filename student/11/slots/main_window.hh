@@ -47,6 +47,7 @@ private slots:
     /// \param[in] middle_sym Name of the fruit symbol on the middle lane.
     ///
     void reelStopped(const std::string& middle_sym);
+    void spin_reel();
 
 
 private:
@@ -57,6 +58,7 @@ private:
 
     const Fruits fruits_;       ///< The game symbols and their rarities.
     Ui::MainWindowClass ui_;    ///< (Black) Qt magic handling the UI.
+    std::vector<Reel*> reels_;
 
 };  // class MainWindow
 

@@ -35,10 +35,10 @@ QSlider {background-color: rgb(0, 0, 0);}</string>
    <widget class="QWidget" name="gridLayoutWidget">
     <property name="geometry">
      <rect>
-      <x>150</x>
-      <y>170</y>
-      <width>381</width>
-      <height>351</height>
+      <x>70</x>
+      <y>140</y>
+      <width>491</width>
+      <height>401</height>
      </rect>
     </property>
     <layout class="QGridLayout" name="reelGrid">
@@ -65,8 +65,17 @@ QSlider {background-color: rgb(0, 0, 0);}</string>
      </property>
      <item row="0" column="1">
       <widget class="QLabel" name="reel2_lab1">
+       <property name="maximumSize">
+        <size>
+         <width>123</width>
+         <height>82</height>
+        </size>
+       </property>
        <property name="text">
         <string/>
+       </property>
+       <property name="scaledContents">
+        <bool>true</bool>
        </property>
       </widget>
      </item>
@@ -122,57 +131,129 @@ QSlider {background-color: rgb(0, 0, 0);}</string>
      </item>
      <item row="0" column="0">
       <widget class="QLabel" name="reel1_lab1">
+       <property name="maximumSize">
+        <size>
+         <width>123</width>
+         <height>82</height>
+        </size>
+       </property>
        <property name="text">
         <string/>
+       </property>
+       <property name="scaledContents">
+        <bool>true</bool>
        </property>
       </widget>
      </item>
      <item row="1" column="1">
       <widget class="QLabel" name="reel2_lab2">
+       <property name="maximumSize">
+        <size>
+         <width>123</width>
+         <height>82</height>
+        </size>
+       </property>
        <property name="text">
         <string/>
+       </property>
+       <property name="scaledContents">
+        <bool>true</bool>
        </property>
       </widget>
      </item>
      <item row="1" column="2">
       <widget class="QLabel" name="reel3_lab2">
+       <property name="maximumSize">
+        <size>
+         <width>123</width>
+         <height>82</height>
+        </size>
+       </property>
        <property name="text">
         <string/>
+       </property>
+       <property name="scaledContents">
+        <bool>true</bool>
        </property>
       </widget>
      </item>
      <item row="2" column="0">
       <widget class="QLabel" name="reel1_lab3">
+       <property name="maximumSize">
+        <size>
+         <width>123</width>
+         <height>82</height>
+        </size>
+       </property>
        <property name="text">
         <string/>
+       </property>
+       <property name="scaledContents">
+        <bool>true</bool>
        </property>
       </widget>
      </item>
      <item row="1" column="0">
       <widget class="QLabel" name="reel1_lab2">
+       <property name="maximumSize">
+        <size>
+         <width>123</width>
+         <height>82</height>
+        </size>
+       </property>
        <property name="text">
         <string/>
+       </property>
+       <property name="scaledContents">
+        <bool>true</bool>
        </property>
       </widget>
      </item>
      <item row="2" column="1">
       <widget class="QLabel" name="reel2_lab3">
+       <property name="maximumSize">
+        <size>
+         <width>123</width>
+         <height>82</height>
+        </size>
+       </property>
        <property name="text">
         <string/>
+       </property>
+       <property name="scaledContents">
+        <bool>true</bool>
        </property>
       </widget>
      </item>
      <item row="2" column="2">
       <widget class="QLabel" name="reel3_lab3">
+       <property name="maximumSize">
+        <size>
+         <width>123</width>
+         <height>82</height>
+        </size>
+       </property>
        <property name="text">
         <string/>
+       </property>
+       <property name="scaledContents">
+        <bool>true</bool>
        </property>
       </widget>
      </item>
      <item row="0" column="2">
       <widget class="QLabel" name="reel3_lab1">
+       <property name="maximumSize">
+        <size>
+         <width>123</width>
+         <height>82</height>
+        </size>
+       </property>
        <property name="text">
         <string/>
+       </property>
+       <property name="scaledContents">
+        <bool>true</bool>
        </property>
       </widget>
      </item>
@@ -482,8 +563,7 @@ QSlider {background-color: rgb(0, 0, 0);}</string>
      </font>
     </property>
     <property name="styleSheet">
-     <string notr="true">
-</string>
+     <string notr="true"/>
     </property>
     <property name="frameShape">
      <enum>QFrame::StyledPanel</enum>
@@ -523,7 +603,7 @@ QSlider {background-color: rgb(0, 0, 0);}</string>
          <font>
           <family>Engravers MT</family>
           <pointsize>14</pointsize>
-          <weight>7</weight>
+          <weight>50</weight>
           <italic>false</italic>
           <bold>false</bold>
          </font>
@@ -687,6 +767,19 @@ QSlider {background-color: rgb(0, 0, 0);}</string>
       </item>
      </layout>
     </widget>
+   </widget>
+   <widget class="QPushButton" name="btn_start">
+    <property name="geometry">
+     <rect>
+      <x>630</x>
+      <y>470</y>
+      <width>75</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>start</string>
+    </property>
    </widget>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
