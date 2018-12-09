@@ -29,7 +29,6 @@
    </property>
    <property name="styleSheet">
     <string notr="true">QWidget {background-image: url(:/MainWindow/Resources/tile.png);}
-QFrame {background: rgb(255, 170, 0); background-color: rgb(255, 170, 0)}
 QSlider {background-color: rgb(0, 0, 0);}</string>
    </property>
    <widget class="QWidget" name="gridLayoutWidget">
@@ -71,6 +70,9 @@ QSlider {background-color: rgb(0, 0, 0);}</string>
          <height>82</height>
         </size>
        </property>
+       <property name="styleSheet">
+        <string notr="true">QFrame {background: rgb(255, 255, 255)}</string>
+       </property>
        <property name="text">
         <string/>
        </property>
@@ -80,7 +82,7 @@ QSlider {background-color: rgb(0, 0, 0);}</string>
       </widget>
      </item>
      <item row="4" column="1">
-      <widget class="QPushButton" name="lock3_btn">
+      <widget class="QPushButton" name="lock2_btn">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
          <horstretch>0</horstretch>
@@ -137,6 +139,9 @@ QSlider {background-color: rgb(0, 0, 0);}</string>
          <height>82</height>
         </size>
        </property>
+       <property name="styleSheet">
+        <string notr="true">QFrame {background: rgb(255, 255, 255)}</string>
+       </property>
        <property name="text">
         <string/>
        </property>
@@ -152,6 +157,9 @@ QSlider {background-color: rgb(0, 0, 0);}</string>
          <width>123</width>
          <height>82</height>
         </size>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">QFrame {background: rgb(255, 255, 255)}</string>
        </property>
        <property name="text">
         <string/>
@@ -169,6 +177,9 @@ QSlider {background-color: rgb(0, 0, 0);}</string>
          <height>82</height>
         </size>
        </property>
+       <property name="styleSheet">
+        <string notr="true">QFrame {background: rgb(255, 255, 255)}</string>
+       </property>
        <property name="text">
         <string/>
        </property>
@@ -184,6 +195,9 @@ QSlider {background-color: rgb(0, 0, 0);}</string>
          <width>123</width>
          <height>82</height>
         </size>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">QFrame {background: rgb(255, 255, 255)}</string>
        </property>
        <property name="text">
         <string/>
@@ -201,6 +215,9 @@ QSlider {background-color: rgb(0, 0, 0);}</string>
          <height>82</height>
         </size>
        </property>
+       <property name="styleSheet">
+        <string notr="true">QFrame {background: rgb(255, 255, 255)}</string>
+       </property>
        <property name="text">
         <string/>
        </property>
@@ -216,6 +233,9 @@ QSlider {background-color: rgb(0, 0, 0);}</string>
          <width>123</width>
          <height>82</height>
         </size>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">QFrame {background: rgb(255, 255, 255)}</string>
        </property>
        <property name="text">
         <string/>
@@ -233,6 +253,9 @@ QSlider {background-color: rgb(0, 0, 0);}</string>
          <height>82</height>
         </size>
        </property>
+       <property name="styleSheet">
+        <string notr="true">QFrame {background: rgb(255, 255, 255)}</string>
+       </property>
        <property name="text">
         <string/>
        </property>
@@ -248,6 +271,9 @@ QSlider {background-color: rgb(0, 0, 0);}</string>
          <width>123</width>
          <height>82</height>
         </size>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">QFrame {background: rgb(255, 255, 255)}</string>
        </property>
        <property name="text">
         <string/>
@@ -407,7 +433,7 @@ QSlider {background-color: rgb(0, 0, 0);}</string>
       </widget>
      </item>
      <item row="4" column="2">
-      <widget class="QPushButton" name="lock2_btn">
+      <widget class="QPushButton" name="lock3_btn">
        <property name="enabled">
         <bool>true</bool>
        </property>
@@ -563,7 +589,7 @@ QSlider {background-color: rgb(0, 0, 0);}</string>
      </font>
     </property>
     <property name="styleSheet">
-     <string notr="true"/>
+     <string notr="true">QFrame {background: rgb(255, 170, 0)}</string>
     </property>
     <property name="frameShape">
      <enum>QFrame::StyledPanel</enum>
@@ -771,11 +797,20 @@ QSlider {background-color: rgb(0, 0, 0);}</string>
    <widget class="QPushButton" name="btn_start">
     <property name="geometry">
      <rect>
-      <x>630</x>
-      <y>470</y>
-      <width>75</width>
-      <height>23</height>
+      <x>610</x>
+      <y>450</y>
+      <width>91</width>
+      <height>81</height>
      </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Engravers MT</family>
+      <pointsize>14</pointsize>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QPushButton { background: red }</string>
     </property>
     <property name="text">
      <string>start</string>

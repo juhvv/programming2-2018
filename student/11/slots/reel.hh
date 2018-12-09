@@ -17,8 +17,10 @@
 #include <QObject>
 #include <QPixmap>
 #include <QPushButton>
+#include <QTimer>
 #include <map>
 #include <memory>
+#include <algorithm>
 #include <random>
 #include <string>
 #include <utility>
@@ -27,7 +29,6 @@
 // Fruits is an alias for a map which contains a fruit's name and
 // corresponding image and likelyhood of appearance.
 using Fruits = std::map<std::string, std::pair<QPixmap, int>>;
-
 
 /// \class Reel
 /// \brief Implements reels which are used to determine if the player has won.
@@ -59,8 +60,7 @@ public:
     ~Reel();
 
 public slots:
-    //void spin_to(std::string& picId, int& spinTime);
-    void test_index();
+    void spin();
 
 signals:
 
@@ -71,22 +71,48 @@ signals:
     void stopped(const std::string& middleSym);
 
 private:
+    // struct for each fruit on reel
     struct Reel_data {
         std::string id;
         QPixmap img;
+        int freq;
         Reel_data* next;
         Reel_data* prev;
     };
-    QTimer* spinFreq;
-    void print_syms();
+    // container for 'Reel_data' pointers
+    std::vector<Reel_data*> fruitVec_;
 
+    // pointers to first and last element of list
     Reel_data* first_;
     Reel_data* last_;
-    Reel_data* printPtr_ = nullptr;
 
+    // timer used to spin the reels
+    QTimer* spinTimer_;
+
+    // distribution and random engine variables
+    std::shared_ptr<std::default_random_engine> reelRng_;
+    std::discrete_distribution<int> fruitFrqDist_;
+
+    // displays fruits on labels
+    void print_fruits() const;
+    // method for linking 'Reel_data' elements and other stuff
+    void setup_reel();
+
+
+    // labels which are used by this reel
     QLabel* lab1_;
     QLabel* lab2_;
     QLabel* lab3_;
+
+    // pointer to reel's lock button
+    const QPushButton* lockButton_;
+
+    // counter for tracking how long reel spins
+    int indexCounter_;
+
+    private slots:
+        void index_reel();
+        void stop_reel();
 
 };  // class Reel
 
