@@ -35,7 +35,21 @@ void SlotsGame::money_inserted()
     set_lcd();
 }
 
-// sets lcd display to show current money
+/* Slot called when all reels have stopped. Receives vector
+ * containing names of fruits in middle row as parameter and calculates
+ * possible winning sum.
+*/
+void SlotsGame::game_ended(const std::vector<std::string> results)
+{
+    // delet this
+    std::cout << "---DEBUG START---" << std::endl;
+    for (int n = 0; n < results.size(); ++n) {
+        std::cout << n << ": " << results.at(n) << std::endl;
+    }
+    std::cout << "---DEBUG END---" << std::endl;
+}
+
+// Sets lcd display to show current money.
 void SlotsGame::set_lcd()
 {
     int i = playerMoney_;
@@ -46,7 +60,7 @@ void SlotsGame::set_lcd()
                        + QString("%1").arg(i, 1, 10, QChar('0')));
 }
 
-// slot for changing bet
+// Slot called when bet slider's value changes; sets current bet
 void SlotsGame::bet_changed()
 {
     if (betSlider_->value() == 1) {

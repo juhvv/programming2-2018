@@ -71,15 +71,18 @@ Fruits loadFruits() {
 
 MainWindow::MainWindow(QWidget* parent):
     QMainWindow(parent),
-    fruits_(loadFruits()) {
+    fruits_(loadFruits()){
 
     ui_.setupUi(this);
     initUi();
 }
 
 void MainWindow::reelStopped(const std::string& middle_sym) {
-    toggle_btns();
-    std::cout << middle_sym << std::endl;
+    resultVec_.push_back(middle_sym);
+    if (resultVec_.size() == 3) {
+        emit spins_results(resultVec_);
+        resultVec_.clear();
+    }
 }
 
 void MainWindow::spin_reel()
@@ -118,16 +121,24 @@ void MainWindow::initUi() {
     const std::vector<QLabel*> labelVec3 = {ui_.reel3_lab1, ui_.reel3_lab2, ui_.reel3_lab3};
 
     // create reels and store their pointers
-    Reel* reel1 = new Reel(labelVec1, ui_.lock1_btn, &fruits_, rng);
-    Reel* reel2 = new Reel(labelVec2, ui_.lock2_btn, &fruits_, rng);
-    Reel* reel3 = new Reel(labelVec3, ui_.lock3_btn, &fruits_, rng);
+    Reel* reel1 = new Reel(labelVec1, ui_.lock1_btn, &fruits_, rng, 0);
+    Reel* reel2 = new Reel(labelVec2, ui_.lock2_btn, &fruits_, rng, 16);
+    Reel* reel3 = new Reel(labelVec3, ui_.lock3_btn, &fruits_, rng, 32);
     reels_ = {reel1, reel2, reel3};
 
     // connect slots&signals
     connect(reel1, &Reel::stopped, this, &MainWindow::reelStopped);
+    connect(reel2, &Reel::stopped, this, &MainWindow::reelStopped);
+    connect(reel3, &Reel::stopped, this, &MainWindow::reelStopped);
+
 
     connect(game_core_, &SlotsGame::start_reels, this, &MainWindow::toggle_btns);
     connect(game_core_, &SlotsGame::start_reels, this, &MainWindow::spin_reel);
+    connect(this, &MainWindow::spins_results, this, &MainWindow::toggle_btns);
+    connect(this, &MainWindow::spins_results, game_core_, &SlotsGame::game_ended);
+
+
+    resultVec_ = {};
 }
 
 void MainWindow::toggle_btns()

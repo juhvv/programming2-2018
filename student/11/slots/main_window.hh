@@ -43,6 +43,8 @@ public slots:
     ///
     void toggle_btns();
 
+signals:
+    void spins_results(const std::vector<std::string> result);
 
 private slots:
 
@@ -52,7 +54,7 @@ private slots:
     ///
     /// \param[in] middle_sym Name of the fruit symbol on the middle lane.
     ///
-    void reelStopped(const std::string& middle_sym);
+    void reelStopped(const std::string& midSymId);
 
     void spin_reel();
 
@@ -66,6 +68,8 @@ private:
     const Fruits fruits_;       ///< The game symbols and their rarities.
     Ui::MainWindowClass ui_;    ///< (Black) Qt magic handling the UI.
     std::vector<Reel*> reels_;  ///< Container for pointers to reels.
+    std::vector<std::string> resultVec_; ///< Container for results from spins
+
 
     SlotsGame* game_core_;
 

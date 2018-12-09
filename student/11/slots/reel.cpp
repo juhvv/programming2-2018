@@ -16,8 +16,13 @@
 Reel::Reel(const std::vector<QLabel*>& labels,
            const QPushButton* lock_button,
            const Fruits* fruits,
-           std::shared_ptr<std::default_random_engine> rng):
-    spinTimer_(new QTimer(this)), first_(nullptr), last_(nullptr), reelRng_(rng)
+           std::shared_ptr<std::default_random_engine> rng,
+           const int delay):
+                first_(nullptr),
+                last_(nullptr),
+                spinTimer_(new QTimer(this)),
+                spinDelay_(delay),
+                reelRng_(rng)
 {
     fruitVec_ = {};
     // create 'Reel_data' elements and store pointers to 'fruitVec_'
@@ -46,7 +51,7 @@ Reel::Reel(const std::vector<QLabel*>& labels,
     connect(spinTimer_, &QTimer::timeout, this, &Reel::stop_reel);
 }
 
-// destructor
+// Destructor
 Reel::~Reel()
 {
     // un-loop the list
@@ -66,12 +71,20 @@ Reel::~Reel()
 // Slot called when signal to spin this reel is received
 void Reel::spin()
 {
+    // check if reel is locked
     if (not lockButton_->isChecked()) {
+        // randomize index of fruit to stop at
+        resultIndex_ = fruitFrqDist_(*reelRng_);
+
+        // randomize spin time
+        std::uniform_int_distribution<int> spinDist(0,8);
+        spinTime_ = 25 + spinDelay_ + spinDist(*reelRng_);
+
+        // start timer
         spinTimer_->start(50);
     } else {
         emit stopped(first_->id);
     }
-
 }
 
 // Index the list forward by one
@@ -83,22 +96,16 @@ void Reel::index_reel()
 }
 
 /*
- * Slot that checks if reel should stop. Also randomizes
- * the fruit
+ * Slot that checks if reel should stop. When reel stops,
+ *  stopped signal is emitted.
 */
 void Reel::stop_reel()
 {
-    // the reel should index at least 40 times
-    if ((indexCounter_ > 40)) {
+    // check if reel has spun long enough
+    if ((indexCounter_ > spinTime_)) {
 
-        // randomize index of fruit to stop at
-        int result = fruitFrqDist_(*reelRng_);
-        /* reel should stop only if the randomized fruit is the same that is
-         *  currently showed in the middle label (= target of 'first_')
-         * if not, reel keeps spinning until such case is encountered;
-         * this creates random spin time for reel
-        */
-        if (first_->id == fruitVec_.at(result)->id) {
+        // keep spinning the reel until result fruit is in the middle
+        if (first_->id == fruitVec_.at(resultIndex_)->id) {
             spinTimer_->stop();
             emit stopped(first_->id);
             indexCounter_ = 0;
@@ -113,9 +120,11 @@ void Reel::setup_reel()
 {
     // vector for frequencies (weights)
     std::vector<int> weightVec = {};
-    const int vecLen = fruitVec_.size();
+    const int fruitVecLen = fruitVec_.size();
 
-    for (int n = 0; n < vecLen; ++n) {
+    // link elements and get their frequencies
+    for (int n = 0; n < fruitVecLen; ++n) {
+        // get 'Reel_data' element pointer
         auto elem = fruitVec_.at(n);
         weightVec.push_back(elem->freq);
 
@@ -123,10 +132,10 @@ void Reel::setup_reel()
         if (n == 0) {
             first_ = elem;
             // link first element to last element
-            elem->prev = fruitVec_.at(vecLen - 1);
+            elem->prev = fruitVec_.at(fruitVecLen - 1);
             elem->next = fruitVec_.at(n + 1);
 
-        } else if (n == vecLen - 1) {
+        } else if (n == fruitVecLen - 1) {
             last_ = elem;
             elem->prev = fruitVec_.at(n - 1);
             // link last element to first element

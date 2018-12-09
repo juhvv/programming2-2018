@@ -52,7 +52,8 @@ public:
     Reel(const std::vector<QLabel*>& labels,
          const QPushButton* lock_button,
          const Fruits* fruits,
-         std::shared_ptr<std::default_random_engine> rng);
+         std::shared_ptr<std::default_random_engine> rng,
+         const int delay);
 
     // Dynamic data structure must have a destructor
     // that can be called to deallocate memory,
@@ -68,7 +69,7 @@ signals:
     ///
     /// \param[in] Name of the middle symbol on the Reel.
     ///
-    void stopped(const std::string& middleSym);
+    void stopped(const std::string& midSymId);
 
 private:
     // struct for each fruit on reel
@@ -88,6 +89,11 @@ private:
 
     // timer used to spin the reels
     QTimer* spinTimer_;
+    // increases the time this reel spins
+    const int spinDelay_;
+
+    int resultIndex_;
+    int spinTime_;
 
     // distribution and random engine variables
     std::shared_ptr<std::default_random_engine> reelRng_;
