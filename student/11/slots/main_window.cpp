@@ -84,16 +84,9 @@ void MainWindow::reelStopped(const std::string& middle_sym) {
 
 void MainWindow::spin_reel()
 {
-    toggle_btns();
     for (auto reel : reels_) {
         reel->spin();
     }
-}
-
-void MainWindow::start_game()
-{
-
-
 }
 
 void MainWindow::initUi() {
@@ -111,28 +104,41 @@ void MainWindow::initUi() {
     const auto seed = time.time_since_epoch().count();
     auto rng = std::make_shared<std::default_random_engine>(seed);
 
+    // create game manager
+    game_core_ = new SlotsGame(ui_.bet_slider, ui_.money_scr,
+                               ui_.money_insert_btn, ui_.btn_start);
+
     // Create each Reel with its own specific labels, etc.
     // * Create the Reels yourself, nullptr is just a dummy value here.
     btnDisableSwitch_ = false;
 
+    // display labels for each reel
     const std::vector<QLabel*> labelVec1 = {ui_.reel1_lab1, ui_.reel1_lab2, ui_.reel1_lab3};
     const std::vector<QLabel*> labelVec2 = {ui_.reel2_lab1, ui_.reel2_lab2, ui_.reel2_lab3};
     const std::vector<QLabel*> labelVec3 = {ui_.reel3_lab1, ui_.reel3_lab2, ui_.reel3_lab3};
 
+    // create reels and store their pointers
     Reel* reel1 = new Reel(labelVec1, ui_.lock1_btn, &fruits_, rng);
     Reel* reel2 = new Reel(labelVec2, ui_.lock2_btn, &fruits_, rng);
     Reel* reel3 = new Reel(labelVec3, ui_.lock3_btn, &fruits_, rng);
     reels_ = {reel1, reel2, reel3};
 
+    // connect slots&signals
     connect(reel1, &Reel::stopped, this, &MainWindow::reelStopped);
-    connect(ui_.btn_start, &QPushButton::clicked, this, &MainWindow::spin_reel);
+
+    connect(game_core_, &SlotsGame::start_reels, this, &MainWindow::toggle_btns);
+    connect(game_core_, &SlotsGame::start_reels, this, &MainWindow::spin_reel);
 }
 
 void MainWindow::toggle_btns()
 {
+    // set 'setDisabled' to opposite value for all interactive elements in ui
     ui_.lock1_btn->setDisabled(not btnDisableSwitch_);
     ui_.lock2_btn->setDisabled(not btnDisableSwitch_);
     ui_.lock3_btn->setDisabled(not btnDisableSwitch_);
     ui_.btn_start->setDisabled(not btnDisableSwitch_);
+    ui_.bet_slider->setDisabled(not btnDisableSwitch_);
+    ui_.money_insert_btn->setDisabled(not btnDisableSwitch_);
+
     btnDisableSwitch_ = not btnDisableSwitch_;
 }

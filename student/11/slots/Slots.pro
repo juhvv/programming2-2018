@@ -28,11 +28,13 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
     main.cpp \
     main_window.cpp \
-    reel.cpp
+    reel.cpp \
+    slots_game.cpp
 
 HEADERS += \
     main_window.hh \
-    reel.hh
+    reel.hh \
+    slots_game.hh
 
 FORMS += \
     main_window.ui

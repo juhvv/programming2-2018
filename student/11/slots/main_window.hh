@@ -14,6 +14,7 @@
 #define SLOTS_MAINWINDOW_H
 
 #include "reel.hh"
+#include "slots_game.hh"
 #include "ui_main_window.h"
 #include <QMainWindow>
 #include <string>
@@ -37,6 +38,11 @@ public:
     ///
     explicit MainWindow(QWidget* parent = nullptr);
 
+public slots:
+    /// \brief Disables/enables ui buttons.
+    ///
+    void toggle_btns();
+
 
 private slots:
 
@@ -49,7 +55,6 @@ private slots:
     void reelStopped(const std::string& middle_sym);
 
     void spin_reel();
-    void start_game();
 
 
 private:
@@ -62,9 +67,7 @@ private:
     Ui::MainWindowClass ui_;    ///< (Black) Qt magic handling the UI.
     std::vector<Reel*> reels_;  ///< Container for pointers to reels.
 
-    /// \brief Disables/enables ui buttons.
-    ///
-    void toggle_btns();
+    SlotsGame* game_core_;
 
     bool btnDisableSwitch_;     ///< Indicates if buttons are locked.
 

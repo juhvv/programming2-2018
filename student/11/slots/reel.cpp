@@ -63,7 +63,7 @@ Reel::~Reel()
     delete spinTimer_;
 }
 
-// Slot called when signal to spin this reel is emitted
+// Slot called when signal to spin this reel is received
 void Reel::spin()
 {
     if (not lockButton_->isChecked()) {
