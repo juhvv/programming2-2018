@@ -75,7 +75,6 @@ MainWindow::MainWindow(QWidget* parent):
 
     ui_.setupUi(this);
     initUi();
-    lockBtnIsDisabled = false;
     resultVec_ = {};
 }
 
@@ -86,6 +85,7 @@ void MainWindow::reelStopped(const std::string& middle_sym) {
     // if 'resultVec_' has 3 elements, all reels have stopped
     if (resultVec_.size() == 3) {
         set_button_state(false);
+        toggle_lock_btns();
         emit spins_results(resultVec_);
 
         resultVec_.clear();
@@ -95,7 +95,9 @@ void MainWindow::reelStopped(const std::string& middle_sym) {
 // Sets all reels to spin
 void MainWindow::spin_reel()
 {
+    // lock buttons
     set_button_state(true);
+
     for (auto reel : reels_) {
         reel->spin();
     }
@@ -128,7 +130,7 @@ void MainWindow::initUi() {
     const std::vector<QLabel*> labelVec3 = {ui_.reel3_lab1,
                                             ui_.reel3_lab2, ui_.reel3_lab3};
 
-    // create reels and store their pointers
+    // create reels and store their pointers/lock buttons
     Reel* reel1 = new Reel(labelVec1, ui_.lock1_btn, &fruits_, rng, 0);
     Reel* reel2 = new Reel(labelVec2, ui_.lock2_btn, &fruits_, rng, 16);
     Reel* reel3 = new Reel(labelVec3, ui_.lock3_btn, &fruits_, rng, 32);
@@ -142,8 +144,8 @@ void MainWindow::initUi() {
     connect(reel3, &Reel::stopped, this, &MainWindow::reelStopped);
 
     connect(game_core_, &SlotsGame::start_reels, this, &MainWindow::spin_reel);
-    connect(this, &MainWindow::spins_results, game_core_, &SlotsGame::game_ended);
-    connect(this, &MainWindow::spins_results, this, &MainWindow::toggle_lock_btns);
+    connect(game_core_, &SlotsGame::win_signal, this, &MainWindow::toggle_lock_btns);
+    connect(this, &MainWindow::spins_results, game_core_, &SlotsGame::spins_completed);
 }
 
 // Sets interactive ui elements' disabled state to 'value'
@@ -157,23 +159,22 @@ void MainWindow::set_button_state(bool value)
     ui_.money_insert_btn->setDisabled(value);
 }
 
-// Manages lock buttons
-void MainWindow::toggle_lock_btns()
+// Manages lock buttons, 'value = false' by default
+void MainWindow::toggle_lock_btns(bool value)
 {
     // buttons wont be disabled by default
-    bool lockBtns = false;
 
     // determine whether buttons should be locked
     for (auto buttonPtr : reelLockBtns_) {
         // if a lock button is checked, lock buttons will be disabled
         if (buttonPtr->isChecked()) {
-            lockBtns = true;
+            value = true;
         }
     }
 
     // un-check buttons and set disable to current value of lockBtnIsDisabled
     for(auto buttonPtr : reelLockBtns_) {
-        buttonPtr->setDisabled(lockBtnIsDisabled);
+        buttonPtr->setDisabled(value);
         buttonPtr->setChecked(false);
     }
 }

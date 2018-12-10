@@ -87,7 +87,8 @@ void Reel::spin()
     }
 }
 
-// Index the list forward by one
+// Switch pointer 'first_' to next element on the list.
+// -> The reel indexes forward by one.
 void Reel::index_reel()
 {
     first_ = first_->next;
@@ -156,6 +157,6 @@ void Reel::setup_reel()
 void Reel::print_fruits() const
 {
     lab2_->setPixmap(first_->img);
-    lab1_->setPixmap(first_->prev->img);
-    lab3_->setPixmap(first_->next->img);
+    lab1_->setPixmap(first_->next->img);
+    lab3_->setPixmap(first_->prev->img);
 }

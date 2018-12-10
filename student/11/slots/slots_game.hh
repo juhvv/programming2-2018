@@ -19,19 +19,21 @@ using WinMultMap = std::map< std::string, std::vector< std::pair<int, int>> >;
 */
 const WinMultMap WINMULT{
     {"cherries", {{3,2}}},
-    {"strawberry", {{2,2}, {3,5}}},
+    {"strawberry", {{3,2}}},
     {"orange", {{2,2}, {3,5}}},
-    {"pear", {{1,2}, {3,5}}},
+    {"pear", {{2,2}, {3,5}}},
     {"apple", {{3,10}}},
     {"bananas", {{3,10}}},
-    {"tomato", {{3,10}}},
-    {"grapes", {{3,100}}},
-    {"eggplant", {{3,100}}}
+    {"tomato", {{3,10}, {2,5}}},
+    {"grapes", {{3,100}, {2,10}, {1,2}}},
+    {"eggplant", {{3,100}, {2,10}, {1,5}}}
 };
 
 /// \class SlotsGame
 /// \brief Implements game logic and rules.
 ///
+/// Keeps track of the players money, calculates possible winnings and determines
+/// some cases when reels cannot be locked.
 ///
 class SlotsGame: public QObject {
     Q_OBJECT
@@ -48,26 +50,47 @@ class SlotsGame: public QObject {
                   QPushButton* insertMoney, QPushButton* startGame);
 
     public slots:
-        void game_started();
-        void money_inserted();
-        void game_ended(const std::vector<std::string> results);
+        /// \brief Slot called when all reels have stopped.
+        ///
+        /// \param[in] results Vector with names of fruits on middle row.
+        ///
+        void spins_completed(const std::vector<std::string> results);
+
 
     signals:
+        /// \brief Signal emitted when reels should start to spin.
+        ///
         void start_reels();
 
+        /// \brief Signal emitted when win occurs.
+        /// Used to disable reel lock buttons.
+        ///
+        /// \param[in] value 'true' disables reel lock buttons.
+        void win_signal(bool value);
+
     private:
-        double playerMoney_;
-        double curBet_;
+        double playerMoney_;    ///< Players current money.
+        double curBet_;         ///< Current bet.
 
-        QSlider* betSlider_;
-        QLCDNumber* moneyScr_;
+        QSlider* betSlider_;    ///< Slider that determines current bet
+        QLCDNumber* moneyScr_;  ///< Screen where current funds are dispalyed
 
+        /// \brief Updates the display to show current money
+        ///
         void set_lcd();
-        void calculate_win();
 
     private slots:
+        /// \brief Updates current bet based on position of 'betSlider_'
+        ///
         void bet_changed();
 
+        /// \brief Starts the game if player has enough money.
+        ///
+        void game_started();
+
+        /// \brief Increases player's money by 0.10 $ when called
+        ///
+        void money_inserted();
 };
 
 #endif // SLOTS_GAME_HH

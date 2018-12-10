@@ -39,6 +39,9 @@ public:
     explicit MainWindow(QWidget* parent = nullptr);
 
 signals:
+    /// \brief Emitted when round is over.
+    ///
+    /// \param[in] Vector containing names of fruits on middle line.
     void spins_results(const std::vector<std::string> result);
 
 private slots:
@@ -46,11 +49,15 @@ private slots:
     /// \brief Check if the round is over and prepare for the next round.
     ///
     /// Should get called when a Reel has decided on which fruits to display.
+    /// When this slot is called three times in a round, the round ends
+    /// and names of fruits are passed forwards.
     ///
     /// \param[in] middle_sym Name of the fruit symbol on the middle lane.
     ///
     void reelStopped(const std::string& midSymId);
 
+    /// \brief Spins the reels
+    ///
     void spin_reel();
 
     /// \brief Disables/enables ui buttons.
@@ -60,7 +67,7 @@ private slots:
     /// \brief Sets reels' lock buttons to desired state
     /// \param[in] value Value to set buttons to.
     ///
-    void toggle_lock_btns();
+    void toggle_lock_btns(bool value = false);
 
 
 private:
@@ -77,10 +84,7 @@ private:
     /// \brief Container for pointers to reel locking buttons
     std::vector<QPushButton*> reelLockBtns_;
 
-
-    SlotsGame* game_core_;
-
-    bool lockBtnIsDisabled;     ///< Indicates if buttons are locked.
+    SlotsGame* game_core_; ///< Object for running the game
 
 };  // class MainWindow
 

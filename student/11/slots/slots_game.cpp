@@ -38,9 +38,8 @@ void SlotsGame::money_inserted()
  * containing names of fruits in middle row as parameter and calculates
  * possible winning sum.
 */
-void SlotsGame::game_ended(const std::vector<std::string> results)
+void SlotsGame::spins_completed(const std::vector<std::string> results)
 {
-
     // map that stores each fruit and amount
     std::map<std::string, int> winMap = {};
 
@@ -58,8 +57,8 @@ void SlotsGame::game_ended(const std::vector<std::string> results)
     for (auto pair : winMap) {
         std::cout << pair.first << ":" << pair.second << std::endl;
     }
-
-    int multiplier = 0;
+    // vector to store possible win multipliers
+    std::vector<int> winMultVec = {};
 
     for (auto pair : winMap) {
         int curFruitAmount = pair.second;
@@ -69,17 +68,20 @@ void SlotsGame::game_ended(const std::vector<std::string> results)
 
         for (auto winCondPair : winVec) {
             if ( winCondPair.first == curFruitAmount) {
-                // if one of the found win conditions matches result,
-                // set 'multiplier' to that win condition's multiplier value
+                // if a win conditions matches result, insert that multiplier
+                // to 'winMultVec'
                 std::cout << "win condition triggered" << std::endl; // DELET
-                multiplier = winCondPair.second;
-                //break;
+                winMultVec.push_back(winCondPair.second);
             }
         }
     }
 
-    if (multiplier != 0) {
+    if (winMultVec.size() != 0) {
+        // set multiplier to largest value of 'winMultVec'
+        int multiplier = *max_element(winMultVec.begin(), winMultVec.end());
         playerMoney_ += curBet_ * multiplier;
+        // Signal to disable lock buttons for next spin
+        emit win_signal(true);
         std::cout << "Win: " << curBet_ * multiplier << std::endl;
 
     } else {
@@ -96,8 +98,8 @@ void SlotsGame::game_ended(const std::vector<std::string> results)
 void SlotsGame::set_lcd()
 {
     int i = playerMoney_;
-    // set printing format (00.00)
-    moneyScr_->display(QString("%1").arg(i, 2, 10, QChar('0'))
+    // set printing format (000.00)
+    moneyScr_->display(QString("%1").arg(i, 3, 10, QChar('0'))
                        + "."
                        + QString("%1").arg(qRound((playerMoney_ - i) * 100), 2, 10, QChar('0'))
                        + QString("%1").arg(i, 1, 10, QChar('0')));
