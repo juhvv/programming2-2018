@@ -38,11 +38,6 @@ public:
     ///
     explicit MainWindow(QWidget* parent = nullptr);
 
-public slots:
-    /// \brief Disables/enables ui buttons.
-    ///
-    void toggle_btns();
-
 signals:
     void spins_results(const std::vector<std::string> result);
 
@@ -58,6 +53,15 @@ private slots:
 
     void spin_reel();
 
+    /// \brief Disables/enables ui buttons.
+    ///
+    void set_button_state(bool value);
+
+    /// \brief Sets reels' lock buttons to desired state
+    /// \param[in] value Value to set buttons to.
+    ///
+    void toggle_lock_btns();
+
 
 private:
 
@@ -70,10 +74,13 @@ private:
     std::vector<Reel*> reels_;  ///< Container for pointers to reels.
     std::vector<std::string> resultVec_; ///< Container for results from spins
 
+    /// \brief Container for pointers to reel locking buttons
+    std::vector<QPushButton*> reelLockBtns_;
+
 
     SlotsGame* game_core_;
 
-    bool btnDisableSwitch_;     ///< Indicates if buttons are locked.
+    bool lockBtnIsDisabled;     ///< Indicates if buttons are locked.
 
 };  // class MainWindow
 

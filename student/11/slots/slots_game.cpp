@@ -18,13 +18,12 @@ SlotsGame::SlotsGame(QSlider *betSlider, QLCDNumber* moneyScr,
 void SlotsGame::game_started()
 {
     // start game only if player has enough money
+    // comparing to a slightly reduced value to prevent unsignificant
+    // diffirences from affecting result of comparison
     if (playerMoney_ >= (curBet_ - 0.00001)) {
         playerMoney_ -= curBet_;
         set_lcd();
         emit start_reels();
-
-    } else {
-
     }
 }
 
@@ -41,12 +40,56 @@ void SlotsGame::money_inserted()
 */
 void SlotsGame::game_ended(const std::vector<std::string> results)
 {
-    // delet this
-    std::cout << "---DEBUG START---" << std::endl;
-    for (int n = 0; n < results.size(); ++n) {
-        std::cout << n << ": " << results.at(n) << std::endl;
+
+    // map that stores each fruit and amount
+    std::map<std::string, int> winMap = {};
+
+    for ( auto fruit : results ) {
+        if (winMap.find(fruit) == winMap.end()) {
+            winMap.insert( {fruit, 1} );
+
+        } else {
+            ++winMap.at(fruit);
+        }
     }
+    // DELET
+    std::cout << "---DEBUG START---" << std::endl;
+    std::cout << "len: " << winMap.size() << std::endl;
+    for (auto pair : winMap) {
+        std::cout << pair.first << ":" << pair.second << std::endl;
+    }
+
+    int multiplier = 0;
+
+    for (auto pair : winMap) {
+        int curFruitAmount = pair.second;
+
+        // get win conditions for this fruit
+        auto winVec = WINMULT.at(pair.first);
+
+        for (auto winCondPair : winVec) {
+            if ( winCondPair.first == curFruitAmount) {
+                // if one of the found win conditions matches result,
+                // set 'multiplier' to that win condition's multiplier value
+                std::cout << "win condition triggered" << std::endl; // DELET
+                multiplier = winCondPair.second;
+                //break;
+            }
+        }
+    }
+
+    if (multiplier != 0) {
+        playerMoney_ += curBet_ * multiplier;
+        std::cout << "Win: " << curBet_ * multiplier << std::endl;
+
+    } else {
+        std::cout << "No win." << std::endl;
+    }
+    set_lcd();
+
+    // DELET
     std::cout << "---DEBUG END---" << std::endl;
+
 }
 
 // Sets lcd display to show current money.

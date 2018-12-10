@@ -75,18 +75,27 @@ MainWindow::MainWindow(QWidget* parent):
 
     ui_.setupUi(this);
     initUi();
+    lockBtnIsDisabled = false;
+    resultVec_ = {};
 }
 
+// Receives name of middle fruit from reels and emits it to 'SlotsGame' object
 void MainWindow::reelStopped(const std::string& middle_sym) {
     resultVec_.push_back(middle_sym);
+
+    // if 'resultVec_' has 3 elements, all reels have stopped
     if (resultVec_.size() == 3) {
+        set_button_state(false);
         emit spins_results(resultVec_);
+
         resultVec_.clear();
     }
 }
 
+// Sets all reels to spin
 void MainWindow::spin_reel()
 {
+    set_button_state(true);
     for (auto reel : reels_) {
         reel->spin();
     }
@@ -111,14 +120,13 @@ void MainWindow::initUi() {
     game_core_ = new SlotsGame(ui_.bet_slider, ui_.money_scr,
                                ui_.money_insert_btn, ui_.btn_start);
 
-    // Create each Reel with its own specific labels, etc.
-    // * Create the Reels yourself, nullptr is just a dummy value here.
-    btnDisableSwitch_ = false;
-
     // display labels for each reel
-    const std::vector<QLabel*> labelVec1 = {ui_.reel1_lab1, ui_.reel1_lab2, ui_.reel1_lab3};
-    const std::vector<QLabel*> labelVec2 = {ui_.reel2_lab1, ui_.reel2_lab2, ui_.reel2_lab3};
-    const std::vector<QLabel*> labelVec3 = {ui_.reel3_lab1, ui_.reel3_lab2, ui_.reel3_lab3};
+    const std::vector<QLabel*> labelVec1 = {ui_.reel1_lab1,
+                                            ui_.reel1_lab2, ui_.reel1_lab3};
+    const std::vector<QLabel*> labelVec2 = {ui_.reel2_lab1,
+                                            ui_.reel2_lab2, ui_.reel2_lab3};
+    const std::vector<QLabel*> labelVec3 = {ui_.reel3_lab1,
+                                            ui_.reel3_lab2, ui_.reel3_lab3};
 
     // create reels and store their pointers
     Reel* reel1 = new Reel(labelVec1, ui_.lock1_btn, &fruits_, rng, 0);
@@ -126,30 +134,46 @@ void MainWindow::initUi() {
     Reel* reel3 = new Reel(labelVec3, ui_.lock3_btn, &fruits_, rng, 32);
     reels_ = {reel1, reel2, reel3};
 
+    reelLockBtns_ = {ui_.lock1_btn, ui_.lock2_btn, ui_.lock3_btn};
+
     // connect slots&signals
     connect(reel1, &Reel::stopped, this, &MainWindow::reelStopped);
     connect(reel2, &Reel::stopped, this, &MainWindow::reelStopped);
     connect(reel3, &Reel::stopped, this, &MainWindow::reelStopped);
 
-
-    connect(game_core_, &SlotsGame::start_reels, this, &MainWindow::toggle_btns);
     connect(game_core_, &SlotsGame::start_reels, this, &MainWindow::spin_reel);
-    connect(this, &MainWindow::spins_results, this, &MainWindow::toggle_btns);
     connect(this, &MainWindow::spins_results, game_core_, &SlotsGame::game_ended);
-
-
-    resultVec_ = {};
+    connect(this, &MainWindow::spins_results, this, &MainWindow::toggle_lock_btns);
 }
 
-void MainWindow::toggle_btns()
+// Sets interactive ui elements' disabled state to 'value'
+void MainWindow::set_button_state(bool value)
 {
-    // set 'setDisabled' to opposite value for all interactive elements in ui
-    ui_.lock1_btn->setDisabled(not btnDisableSwitch_);
-    ui_.lock2_btn->setDisabled(not btnDisableSwitch_);
-    ui_.lock3_btn->setDisabled(not btnDisableSwitch_);
-    ui_.btn_start->setDisabled(not btnDisableSwitch_);
-    ui_.bet_slider->setDisabled(not btnDisableSwitch_);
-    ui_.money_insert_btn->setDisabled(not btnDisableSwitch_);
+    ui_.lock1_btn->setDisabled(value);
+    ui_.lock2_btn->setDisabled(value);
+    ui_.lock3_btn->setDisabled(value);
+    ui_.btn_start->setDisabled(value);
+    ui_.bet_slider->setDisabled(value);
+    ui_.money_insert_btn->setDisabled(value);
+}
 
-    btnDisableSwitch_ = not btnDisableSwitch_;
+// Manages lock buttons
+void MainWindow::toggle_lock_btns()
+{
+    // buttons wont be disabled by default
+    bool lockBtns = false;
+
+    // determine whether buttons should be locked
+    for (auto buttonPtr : reelLockBtns_) {
+        // if a lock button is checked, lock buttons will be disabled
+        if (buttonPtr->isChecked()) {
+            lockBtns = true;
+        }
+    }
+
+    // un-check buttons and set disable to current value of lockBtnIsDisabled
+    for(auto buttonPtr : reelLockBtns_) {
+        buttonPtr->setDisabled(lockBtnIsDisabled);
+        buttonPtr->setChecked(false);
+    }
 }
