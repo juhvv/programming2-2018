@@ -139,13 +139,19 @@ void MainWindow::initUi() {
     reelLockBtns_ = {ui_.lock1_btn, ui_.lock2_btn, ui_.lock3_btn};
 
     // connect slots&signals
+    for (auto lockBtn : reelLockBtns_) {
+        connect(lockBtn, &QPushButton::clicked, this,
+                &MainWindow::start_btn_manager);
+    }
+
     connect(reel1, &Reel::stopped, this, &MainWindow::reelStopped);
     connect(reel2, &Reel::stopped, this, &MainWindow::reelStopped);
     connect(reel3, &Reel::stopped, this, &MainWindow::reelStopped);
 
     connect(game_core_, &SlotsGame::start_reels, this, &MainWindow::spin_reel);
     connect(game_core_, &SlotsGame::win_signal, this, &MainWindow::toggle_lock_btns);
-    connect(this, &MainWindow::spins_results, game_core_, &SlotsGame::spins_completed);
+    connect(this, &MainWindow::spins_results, game_core_,
+            &SlotsGame::spins_completed);
 }
 
 // Sets interactive ui elements' disabled state to 'value'
@@ -177,4 +183,19 @@ void MainWindow::toggle_lock_btns(bool value)
         buttonPtr->setDisabled(value);
         buttonPtr->setChecked(false);
     }
+}
+
+// makes sure game cant be started if all reel locking buttons are clicked down.
+void MainWindow::start_btn_manager()
+{
+    bool disableBtn = true;
+    for (auto lockBtn : reelLockBtns_) {
+        // if at least one button is not checked,
+        // start button will not disable.
+        if (not lockBtn->isChecked()) {
+            disableBtn = false;
+        }
+    }
+
+    ui_.btn_start->setDisabled(disableBtn);
 }

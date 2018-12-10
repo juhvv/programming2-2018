@@ -22,6 +22,11 @@ void SlotsGame::game_started()
     // diffirences from affecting result of comparison
     if (playerMoney_ >= (curBet_ - 0.00001)) {
         playerMoney_ -= curBet_;
+
+        // make sure player money cant be negative, like '-0.000001' in this case.
+        if (playerMoney_ < 0) {
+            playerMoney_ = 0;
+        }
         set_lcd();
         emit start_reels();
     }
@@ -97,12 +102,9 @@ void SlotsGame::spins_completed(const std::vector<std::string> results)
 // Sets lcd display to show current money.
 void SlotsGame::set_lcd()
 {
-    int i = playerMoney_;
-    // set printing format (000.00)
-    moneyScr_->display(QString("%1").arg(i, 3, 10, QChar('0'))
-                       + "."
-                       + QString("%1").arg(qRound((playerMoney_ - i) * 100), 2, 10, QChar('0'))
-                       + QString("%1").arg(i, 1, 10, QChar('0')));
+    // use printing format '.00'
+    std::cout << "Printing money..." <<playerMoney_ << std::endl;
+    moneyScr_->display(QString("%1").arg(playerMoney_, 0, 'f', 2));
 }
 
 // Slot called when bet slider's value changes; sets current bet

@@ -69,6 +69,10 @@ private slots:
     ///
     void toggle_lock_btns(bool value = false);
 
+    /// \brief Disables start button if all reels are locked.
+    ///
+    void start_btn_manager();
+
 
 private:
 
