@@ -41,3 +41,6 @@ FORMS += \
 
 RESOURCES += \
     main_window.qrc
+
+DISTFILES += \
+    instructions.txt

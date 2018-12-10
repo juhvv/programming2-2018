@@ -1,3 +1,11 @@
+/*
+ * TIE-02207 ,fall 2018
+ * Slots project
+ * Juho Viljamaa, 275354, viljamaa@student.tut.fi
+ * Program description: Implements a virtual slots game.
+ * file: slots_game.hh
+*/
+
 #ifndef SLOTS_GAME_HH
 #define SLOTS_GAME_HH
 
@@ -5,8 +13,6 @@
 #include <QPushButton>
 #include <QSlider>
 #include <QLCDNumber>
-
-#include <iostream>
 
 // alias for map containing fruits and their win conditions and multipliers
 using WinMultMap = std::map< std::string, std::vector< std::pair<int, int>> >;
@@ -22,7 +28,7 @@ const WinMultMap WINMULT{
     {"strawberry", {{3,2}}},
     {"orange", {{2,2}, {3,5}}},
     {"pear", {{2,2}, {3,5}}},
-    {"apple", {{3,10}}},
+    {"apple", {{3,5}}},
     {"bananas", {{3,10}}},
     {"tomato", {{3,10}, {2,5}}},
     {"grapes", {{3,100}, {2,10}, {1,2}}},
@@ -46,7 +52,7 @@ class SlotsGame: public QObject {
         /// \param[in] insertMoney Button used to insert fixed amount of money.
         /// \param[in] startGame Button used to start tha game.
         ///
-        SlotsGame(QSlider* betSlider, QLCDNumber* moneyScr,
+        SlotsGame(QSlider* betSlider, QLCDNumber* moneyScr, QLCDNumber* winLoseScr,
                   QPushButton* insertMoney, QPushButton* startGame);
 
     public slots:
@@ -72,8 +78,12 @@ class SlotsGame: public QObject {
         double playerMoney_;    ///< Players current money.
         double curBet_;         ///< Current bet.
 
+        double totalInserted;  ///< Total money inserted
+        double totalWon;       ///< Total money won
+
         QSlider* betSlider_;    ///< Slider that determines current bet
         QLCDNumber* moneyScr_;  ///< Screen where current funds are dispalyed
+        QLCDNumber* winLoseScr_; ///< Screen where total winnings/losses displays.
 
         /// \brief Updates the display to show current money
         ///

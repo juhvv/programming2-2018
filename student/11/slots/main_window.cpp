@@ -1,13 +1,9 @@
 ﻿/*
-#####################################################################
-# TIE-02207 Programming 2: Basics, F2018                            #
-# Project4: Slots                                                   #
-# Program description: Implements a virtual slots game.             #
-# File: main_window.cpp                                             #
-# Description: Implements a UI for the game to be playable.         #
-# Notes: * This is an exercise program.                             #
-#        * Students need to modify this file.                       #
-#####################################################################
+ * TIE-02207 ,fall 2018
+ * Slots project
+ * Juho Viljamaa, 275354, viljamaa@student.tut.fi
+ * Program description: Implements a virtual slots game.
+ * file: main_window.cpp
 */
 
 #include "main_window.hh"
@@ -18,8 +14,6 @@
 #include <memory>
 #include <random>
 #include <utility>
-
-#include <iostream>
 
 
 // To avoid polluting the global namespace with all kinds of
@@ -46,7 +40,7 @@ Fruits loadFruits() {
         {"apple", 35},
         {"bananas", 30},
         {"tomato", 24},
-        {"grapes", 15},
+        {"grapes", 9},
         {"eggplant", 5}
     };
 
@@ -119,7 +113,7 @@ void MainWindow::initUi() {
     auto rng = std::make_shared<std::default_random_engine>(seed);
 
     // create game manager
-    game_core_ = new SlotsGame(ui_.bet_slider, ui_.money_scr,
+    game_core_ = new SlotsGame(ui_.bet_slider, ui_.money_scr, ui_.money_scr_2,
                                ui_.money_insert_btn, ui_.btn_start);
 
     // display labels for each reel

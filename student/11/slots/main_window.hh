@@ -1,13 +1,9 @@
 ﻿/*
-#####################################################################
-# TIE-02207 Programming 2: Basics, F2018                            #
-# Project4: Slots                                                   #
-# Program description: Implements a virtual slots game.             #
-# File: main_window.h                                               #
-# Description: Implements a UI for the game to be playable.         #
-# Notes: * This is an exercise program.                             #
-#        * Students need to modify this file.                       #
-#####################################################################
+ * TIE-02207 ,fall 2018
+ * Slots project
+ * Juho Viljamaa, 275354, viljamaa@student.tut.fi
+ * Program description: Implements a virtual slots game.
+ * file: main_window.hh
 */
 
 #ifndef SLOTS_MAINWINDOW_H

@@ -1,10 +1,18 @@
+/*
+ * TIE-02207 ,fall 2018
+ * Slots project
+ * Juho Viljamaa, 275354, viljamaa@student.tut.fi
+ * Program description: Implements a virtual slots game.
+ * file: slots_game.cpp
+*/
+
 #include "slots_game.hh"
 
 
-
 SlotsGame::SlotsGame(QSlider *betSlider, QLCDNumber* moneyScr,
-                     QPushButton* insertMoney, QPushButton* startGame):
-    playerMoney_(0), curBet_(0.05),betSlider_(betSlider), moneyScr_(moneyScr)
+                     QLCDNumber* winLoseScr, QPushButton* insertMoney,
+                     QPushButton* startGame):
+    playerMoney_(0), curBet_(0.05),betSlider_(betSlider), moneyScr_(moneyScr), winLoseScr_(winLoseScr)
 {
     set_lcd();
 
@@ -36,6 +44,7 @@ void SlotsGame::game_started()
 void SlotsGame::money_inserted()
 {
     playerMoney_ += 0.10;
+    totalInserted += 0.10;
     set_lcd();
 }
 
@@ -56,12 +65,6 @@ void SlotsGame::spins_completed(const std::vector<std::string> results)
             ++winMap.at(fruit);
         }
     }
-    // DELET
-    std::cout << "---DEBUG START---" << std::endl;
-    std::cout << "len: " << winMap.size() << std::endl;
-    for (auto pair : winMap) {
-        std::cout << pair.first << ":" << pair.second << std::endl;
-    }
     // vector to store possible win multipliers
     std::vector<int> winMultVec = {};
 
@@ -75,7 +78,6 @@ void SlotsGame::spins_completed(const std::vector<std::string> results)
             if ( winCondPair.first == curFruitAmount) {
                 // if a win conditions matches result, insert that multiplier
                 // to 'winMultVec'
-                std::cout << "win condition triggered" << std::endl; // DELET
                 winMultVec.push_back(winCondPair.second);
             }
         }
@@ -84,18 +86,15 @@ void SlotsGame::spins_completed(const std::vector<std::string> results)
     if (winMultVec.size() != 0) {
         // set multiplier to largest value of 'winMultVec'
         int multiplier = *max_element(winMultVec.begin(), winMultVec.end());
+        // calculate win sum
         playerMoney_ += curBet_ * multiplier;
+        totalWon += curBet_ * multiplier;
+
         // Signal to disable lock buttons for next spin
         emit win_signal(true);
-        std::cout << "Win: " << curBet_ * multiplier << std::endl;
 
-    } else {
-        std::cout << "No win." << std::endl;
     }
     set_lcd();
-
-    // DELET
-    std::cout << "---DEBUG END---" << std::endl;
 
 }
 
@@ -103,8 +102,10 @@ void SlotsGame::spins_completed(const std::vector<std::string> results)
 void SlotsGame::set_lcd()
 {
     // use printing format '.00'
-    std::cout << "Printing money..." <<playerMoney_ << std::endl;
     moneyScr_->display(QString("%1").arg(playerMoney_, 0, 'f', 2));
+
+    double totalWinLost = totalWon - totalInserted;
+    winLoseScr_->display(QString("%1").arg(totalWinLost, 0, 'f', 2));
 }
 
 // Slot called when bet slider's value changes; sets current bet

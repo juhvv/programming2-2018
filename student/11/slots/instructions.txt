@@ -1,0 +1,57 @@
+TIE-02207
+Slots Project
+Juho Viljamaa 275354
+
+Implemented features:
+-Minimal requirements.
+
+Additional features:
+- Player can select the amount of money used for a spin.
+- Spinning animation, randomized spin time and separate stopping.
+- Situations when the reels can be locked.(Specified below)
+
+Game instructions:
+Player inserts money by clicking the "money insert slot" (= black button under 'insert 0.10$').
+As the name suggests, this adds 0.10$ for the player. Current player money is
+displayed in the 'money' lcd display. Current bet is set with the slider under 'BET', 0.05$ or
+0.20$. Game can be started when player has enough money for the selected bet. Reels spin for
+random time and stop in order. Wins are read from the middle row. In case of a win, winning
+money is immediately added to players  total money.
+Reels can be locked before starting a spin, unless...
+1: Player won with the previous spin.
+2: At least one reel was locked during previous spin.
+
+Additionally, at least one reel has to be unlocked to start a game. Total winnings/losses are
+displayed in the 'balance' lcd display. The game ends when the player no longer wants to
+insert more money (realistic?).
+Winning sum is determined by multiplying the current bet with multiplier defined for that row.
+Only the total amount of certain fruit is taken into account, order does not matter. In case
+of multiple win cases, one with the largest multiplier is taken into account. Winning
+multipliers and their corresponding win cases are listed below:
+
+2x multiplier:
+        3 cherries
+        3 strawberries
+        2 oranges
+        2 pears
+        1 grapes
+
+5x multiplier
+        3 oranges
+        3 pear
+        3 apples
+        2 tomatoes
+        1 eggplant
+
+10x multiplier
+        3x bananas
+        3x tomatoes
+        2x eggplants
+        2x grapes
+
+100x multiplier
+        3x grapes
+        3x eggplants
+
+In the program files this data is stored in constant 'WINMULT', defined in start of
+'slots_game.hh'.
