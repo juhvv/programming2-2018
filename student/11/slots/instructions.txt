@@ -18,8 +18,9 @@ displayed in the 'money' lcd display. Current bet is set with the slider under '
 random time and stop in order. Wins are read from the middle row. In case of a win, winning
 money is immediately added to players  total money.
 Reels can be locked before starting a spin, unless...
-1: Player won with the previous spin.
-2: At least one reel was locked during previous spin.
+A) Player won with the previous spin.
+OR
+B) At least one reel was locked during previous spin.
 
 Additionally, at least one reel has to be unlocked to start a game. Total winnings/losses are
 displayed in the 'balance' lcd display. The game ends when the player no longer wants to
