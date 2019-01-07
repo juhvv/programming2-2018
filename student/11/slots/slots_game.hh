@@ -60,7 +60,7 @@ class SlotsGame: public QObject {
         ///
         /// \param[in] results Vector with names of fruits on middle row.
         ///
-        void spins_completed(const std::vector<std::string> results);
+        void spins_completed(const std::vector<std::string>& results);
 
 
     signals:
@@ -78,8 +78,8 @@ class SlotsGame: public QObject {
         double playerMoney_;    ///< Players current money.
         double curBet_;         ///< Current bet.
 
-        double totalInserted;  ///< Total money inserted
-        double totalWon;       ///< Total money won
+        double totalInserted_;  ///< Total money inserted
+        double totalWon_;       ///< Total money won
 
         QSlider* betSlider_;    ///< Slider that determines current bet
         QLCDNumber* moneyScr_;  ///< Screen where current funds are dispalyed

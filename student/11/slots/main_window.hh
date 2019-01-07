@@ -34,11 +34,15 @@ public:
     ///
     explicit MainWindow(QWidget* parent = nullptr);
 
+    /// \brief destructor MainWindow.
+    ///
+    ~MainWindow();
+
 signals:
     /// \brief Emitted when round is over.
     ///
     /// \param[in] Vector containing names of fruits on middle line.
-    void spins_results(const std::vector<std::string> result);
+    void spins_results(const std::vector<std::string>& result);
 
 private slots:
 

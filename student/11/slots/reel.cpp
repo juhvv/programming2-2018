@@ -18,6 +18,9 @@ Reel::Reel(const std::vector<QLabel*>& labels,
                 last_(nullptr),
                 spinTimer_(new QTimer(this)),
                 spinDelay_(delay),
+                resultIndex_(0),
+                spinTime_(0),
+                indexCounter_(0),
                 reelRng_(rng)
 {
     fruitVec_ = {};
@@ -39,8 +42,6 @@ Reel::Reel(const std::vector<QLabel*>& labels,
 
     lockButton_ = lock_button;
     print_fruits();
-
-    indexCounter_ = 0;
 
     // Connect all signals & slots
     connect(spinTimer_, &QTimer::timeout, this, &Reel::index_reel);

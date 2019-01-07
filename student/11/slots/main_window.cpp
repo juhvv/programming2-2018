@@ -72,6 +72,16 @@ MainWindow::MainWindow(QWidget* parent):
     resultVec_ = {};
 }
 
+MainWindow::~MainWindow()
+{
+    // delete reel objects
+    for (auto reel: reels_) {
+        delete reel;
+    }
+    // delete game_core object
+    delete game_core_;
+}
+
 // Receives name of middle fruit from reels and emits it to 'SlotsGame' object
 void MainWindow::reelStopped(const std::string& middle_sym) {
     resultVec_.push_back(middle_sym);

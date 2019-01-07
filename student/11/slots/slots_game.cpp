@@ -12,7 +12,8 @@
 SlotsGame::SlotsGame(QSlider *betSlider, QLCDNumber* moneyScr,
                      QLCDNumber* winLoseScr, QPushButton* insertMoney,
                      QPushButton* startGame):
-    playerMoney_(0), curBet_(0.05),betSlider_(betSlider), moneyScr_(moneyScr), winLoseScr_(winLoseScr)
+    playerMoney_(0), curBet_(0.05), totalInserted_(0), totalWon_(0),
+    betSlider_(betSlider), moneyScr_(moneyScr), winLoseScr_(winLoseScr)
 {
     set_lcd();
 
@@ -44,7 +45,7 @@ void SlotsGame::game_started()
 void SlotsGame::money_inserted()
 {
     playerMoney_ += 0.10;
-    totalInserted += 0.10;
+    totalInserted_ += 0.10;
     set_lcd();
 }
 
@@ -52,7 +53,7 @@ void SlotsGame::money_inserted()
  * containing names of fruits in middle row as parameter and calculates
  * possible winning sum.
 */
-void SlotsGame::spins_completed(const std::vector<std::string> results)
+void SlotsGame::spins_completed(const std::vector<std::string>& results)
 {
     // map that stores each fruit and amount
     std::map<std::string, int> winMap = {};
@@ -88,7 +89,7 @@ void SlotsGame::spins_completed(const std::vector<std::string> results)
         int multiplier = *max_element(winMultVec.begin(), winMultVec.end());
         // calculate win sum
         playerMoney_ += curBet_ * multiplier;
-        totalWon += curBet_ * multiplier;
+        totalWon_ += curBet_ * multiplier;
 
         // Signal to disable lock buttons for next spin
         emit win_signal(true);
@@ -104,7 +105,7 @@ void SlotsGame::set_lcd()
     // use printing format '.00'
     moneyScr_->display(QString("%1").arg(playerMoney_, 0, 'f', 2));
 
-    double totalWinLost = totalWon - totalInserted;
+    double totalWinLost = totalWon_ - totalInserted_;
     winLoseScr_->display(QString("%1").arg(totalWinLost, 0, 'f', 2));
 }
 
